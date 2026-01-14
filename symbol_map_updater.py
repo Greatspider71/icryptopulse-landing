@@ -1,0 +1,52 @@
+# symbol_map_updater.py
+
+import requests
+import json
+import re
+
+BINANCE_FUTURES_URL = "https://fapi.binance.com/fapi/v1/exchangeInfo"
+OUTPUT_FILE = "symbol_map.py"
+
+def generate_symbol_map():
+    try:
+        response = requests.get(BINANCE_FUTURES_URL, timeout=10)
+        data = response.json()
+        symbols = data.get("symbols", [])
+
+        symbol_map = {}
+
+        for s in symbols:
+            symbol = s["symbol"]
+            base = s["baseAsset"].upper()
+            quote = s["quoteAsset"].upper()
+
+            # Only include USDT pairs
+            if quote != "USDT":
+                continue
+
+            if base not in symbol_map:
+                symbol_map[base] = symbol
+
+            # Add simple alias mapping (e.g., BITCOIN → BTCUSDT)
+            if base == "BTC":
+                symbol_map["BITCOIN"] = symbol
+            elif base == "ETH":
+                symbol_map["ETHEREUM"] = symbol
+            elif base == "DOGE":
+                symbol_map["DOGECOIN"] = symbol
+            elif base == "XRP":
+                symbol_map["RIPPLE"] = symbol
+
+        # Write to symbol_map.py
+        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+            f.write("# Auto-generated symbol map from Binance Futures\n")
+            f.write("symbol_map = ")
+            json.dump(symbol_map, f, indent=2, sort_keys=True)
+
+        print(f"✅ symbol_map.py updated with {len(symbol_map)} entries.")
+
+    except Exception as e:
+        print(f"❌ Error fetching Binance symbols: {e}")
+
+if __name__ == "__main__":
+    generate_symbol_map()
