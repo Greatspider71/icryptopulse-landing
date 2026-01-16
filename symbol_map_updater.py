@@ -24,7 +24,8 @@ def generate_symbol_map():
             if quote != "USDT":
                 continue
 
-            if base not in symbol_map:
+            # Only allow base symbols that are 3+ letters to reduce false positives
+            if base not in symbol_map and len(base) >= 3:
                 symbol_map[base] = symbol
 
             # Add simple alias mapping (e.g., BITCOIN → BTCUSDT)

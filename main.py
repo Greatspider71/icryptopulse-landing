@@ -57,7 +57,7 @@ RSS_FEEDS = [
 
 # === UTILS ===
 def get_symbol_for_title(title):
-    title_upper = title.upper()
+    title_upper = title.upper().split()
     for token, symbol in symbol_map.items():
         if token in title_upper:
             return symbol

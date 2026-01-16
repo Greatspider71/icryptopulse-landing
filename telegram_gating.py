@@ -1,9 +1,25 @@
 # telegram_gating.py
 
+import os
 import csv
 from datetime import datetime
 
 DB_FILE = "subscriber_db.csv"
+
+def get_subscription_status(telegram_id):
+    if not os.path.exists(DB_FILE):
+        return False, False, None  # Return defaults if no file yet
+
+    with open(DB_FILE, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row["telegram_id"] == str(telegram_id):
+                is_paid = row["is_paid"] == "1"
+                is_vip = row["is_vip"] == "1"
+                expires_on = row["expires_on"]
+                return is_paid, is_vip, expires_on
+
+    return False, False, None
 
 def load_subscribers():
     """Load subscriber database into a list of dicts"""
