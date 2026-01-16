@@ -1,3 +1,4 @@
+import re
 import sys
 import os
 from dotenv import load_dotenv
@@ -57,9 +58,11 @@ RSS_FEEDS = [
 
 # === UTILS ===
 def get_symbol_for_title(title):
-    title_upper = title.upper().split()
+    title_upper = title.upper()
+    title_words = set(re.findall(r'\b[A-Z0-9]{2,12}\b', title_upper))  # e.g. BTC, DOGE, SHIB, XRP
+
     for token, symbol in symbol_map.items():
-        if token in title_upper:
+        if token.upper() in title_words:
             return symbol
     return None
 
@@ -238,19 +241,45 @@ Reason: <In your own words, no quotes>
 
 def guess_ticker_from_gpt(title, summary):
     prompt = f"""
-Guess most likely crypto symbol (e.g., BTCUSDT, ETHUSDT):
+You are a crypto analyst.
+Based on the news below, guess ONE most relevant Binance USDT perpetual futures symbol
+(e.g. BTCUSDT, ETHUSDT, XRPUSDT).
+
+Rules:
+- Only return ONE symbol
+- Must end with USDT
+- If unsure, return NONE
+
 Title: {title}
 Summary: {summary}
 """
+
     try:
         res = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2
         )
+
         guess = res.choices[0].message.content.strip().upper()
-        return guess if "USDT" in guess else None
-    except:
+
+        # === HARD GUARDS ===
+        if guess == "NONE":
+            return None
+
+        # must end with USDT
+        if not guess.endswith("USDT"):
+            return None
+
+        # must exist in Binance symbol map
+        if guess not in symbol_map.values():
+            print(f"⚠️ GPT guessed invalid ticker: {guess}")
+            return None
+
+        return guess
+
+    except Exception as e:
+        print("❌ GPT ticker guess error:", e)
         return None
 
 def get_futures_price(symbol):
