@@ -19,6 +19,7 @@ from hashlib import md5
 from datetime import datetime, timedelta
 from technical_indicators import get_technical_indicators, get_market_change_summary
 import subprocess
+from symbol_map import symbol_map
 
 # === LOAD CONFIG ===
 load_dotenv()
@@ -42,6 +43,22 @@ subprocess.run(["python3", "symbol_map_updater.py"])
 # === CONFIG ===
 from config import OPENAI_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 
+# Reverse mapping: symbol (e.g. BTCUSDT) → token (e.g. BTC)
+symbol_to_token = {v: k for k, v in symbol_map.items()}
+
+# Load top 50 volume tickers (from latest Binance 24h data)
+with open("top_volume_tickers.txt") as f:
+    TOP_VOLUME_TICKERS = set(line.strip() for line in f if line.strip())
+
+# === Dynamic major asset detection (first 30 tokens by name length or popularity) ===
+# You can customize which symbols are always respected as 'major'
+
+MAJOR_ASSETS = set()
+
+# Add all base symbols (keys) from the symbol map that are 3–6 characters (common for major coins)
+for token in symbol_map:
+    if 3 <= len(token) <= 6:
+        MAJOR_ASSETS.add(token.upper())
 
 RSS_FEEDS = [
     "https://cointelegraph.com/rss",
@@ -272,8 +289,13 @@ Summary: {summary}
             return None
 
         # must exist in Binance symbol map
+        # ✅ Validate GPT guess
         if guess not in symbol_map.values():
             print(f"⚠️ GPT guessed invalid ticker: {guess}")
+            return None
+
+        if guess not in TOP_VOLUME_TICKERS:
+            print(f"⚠️ GPT guessed low-volume ticker (filtered): {guess}")
             return None
 
         return guess
@@ -417,6 +439,15 @@ def main():
         })
 
         chart_link = f"https://www.tradingview.com/symbols/{ticker}/"
+
+        # 🚨 Block if title clearly mentions a different asset than the selected ticker
+        for major_token in MAJOR_ASSETS:
+            if major_token in title.upper():
+                expected_symbol = symbol_map.get(major_token)
+                if expected_symbol and ticker != expected_symbol:
+                    print(f"❌ BLOCKED: Title mentions {major_token}, but ticker is {ticker}")
+                    continue  # skip this signal
+
         message = f"""{confidence_banner}{contradiction_warning}📊 Signal from news for {ticker}: {signal}
 {label} {title}
 
