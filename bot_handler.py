@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 from telegram import Update, Bot
 from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram import ParseMode
 
 from telegram_gating import (
     handle_register_command,
@@ -141,6 +142,40 @@ def explain(update: Update, context: CallbackContext):
         parse_mode="Markdown"
     )
 
+def forcepost(update: Update, context: CallbackContext):
+    user_id = str(update.effective_user.id)
+    if user_id not in ADMIN_IDS:
+        update.message.reply_text("🚫 Only authorized admins can use /forcepost.")
+        return
+
+    args = context.args
+    if len(args) < 3:
+        update.message.reply_text("Usage: /forcepost <ASSET> <BUY/SELL/HOLD> <CONFIDENCE%> [Reason]")
+        return
+
+    asset = args[0].upper()
+    signal = args[1].upper()
+    confidence = args[2]
+    reason = " ".join(args[3:]) if len(args) > 3 else "Manual test signal."
+
+    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+
+    message = f"""🚨 *Manual Signal Override*
+📊 Signal from admin for {asset}: {signal}
+📈 Confidence: {confidence}%
+💬 {reason}
+🕒 {now}
+
+🔎 *This is a manually posted test. Not financial advice.*
+"""
+
+    try:
+        bot = Bot(token=TELEGRAM_BOT_TOKEN)
+        bot.send_message(chat_id=VIP_CHAT_ID, text=message, parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text("✅ Signal sent to VIP channel.")
+    except Exception as e:
+        update.message.reply_text(f"❌ Failed to post signal: {e}")
+
 # === Boot the Bot ===
 def main():
     updater = Updater(token=TELEGRAM_BOT_TOKEN, use_context=True)
@@ -152,6 +187,7 @@ def main():
     dp.add_handler(CommandHandler("addvip", addvip))
     dp.add_handler(CommandHandler("summary", summary))
     dp.add_handler(CommandHandler("explain", explain))
+    dp.add_handler(CommandHandler("forcepost", forcepost))
 
     print("🤖 Bot is running. Press Ctrl+C to stop.")
     updater.start_polling()

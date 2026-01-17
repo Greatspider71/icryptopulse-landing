@@ -50,7 +50,7 @@ def generate_symbol_map():
             # FLOKI is traded as 1000FLOKIUSDT
             if base == "1000FLOKI":
                 symbol_map["FLOKI"] = symbol
-                
+
             # Add simple alias mapping (e.g., BITCOIN → BTCUSDT)
             if base == "BTC":
                 symbol_map["BITCOIN"] = symbol
