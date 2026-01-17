@@ -31,12 +31,26 @@ def generate_symbol_map():
                 symbol_map[base] = symbol
 
             # === Aliases for special Binance contracts ===
+
             # SHIB is traded as 1000SHIBUSDT on Binance
             if base == "1000SHIB":
                 symbol_map["SHIB"] = symbol
                 symbol_map["SHIBA"] = symbol
                 symbol_map["SHIBA INU"] = symbol
 
+            # PEPE is traded as 1000PEPEUSDT
+            if base == "1000PEPE":
+                symbol_map["PEPE"] = symbol
+                symbol_map["PEPECOIN"] = symbol
+
+            # BONK is traded as 1000BONKUSDT
+            if base == "1000BONK":
+                symbol_map["BONK"] = symbol
+
+            # FLOKI is traded as 1000FLOKIUSDT
+            if base == "1000FLOKI":
+                symbol_map["FLOKI"] = symbol
+                
             # Add simple alias mapping (e.g., BITCOIN → BTCUSDT)
             if base == "BTC":
                 symbol_map["BITCOIN"] = symbol
