@@ -30,6 +30,13 @@ def generate_symbol_map():
             if base not in symbol_map and len(base) >= 3:
                 symbol_map[base] = symbol
 
+            # === Aliases for special Binance contracts ===
+            # SHIB is traded as 1000SHIBUSDT on Binance
+            if base == "1000SHIB":
+                symbol_map["SHIB"] = symbol
+                symbol_map["SHIBA"] = symbol
+                symbol_map["SHIBA INU"] = symbol
+
             # Add simple alias mapping (e.g., BITCOIN → BTCUSDT)
             if base == "BTC":
                 symbol_map["BITCOIN"] = symbol
