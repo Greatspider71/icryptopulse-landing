@@ -20,8 +20,10 @@ def generate_symbol_map():
             base = s["baseAsset"].upper()
             quote = s["quoteAsset"].upper()
 
-            # Only include USDT pairs
+            # Only include USDT perpetual pairs
             if quote != "USDT":
+                continue
+            if not s.get("contractType") == "PERPETUAL":
                 continue
 
             # Only allow base symbols that are 3+ letters to reduce false positives
