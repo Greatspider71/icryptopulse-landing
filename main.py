@@ -13,6 +13,9 @@ import csv
 from contradiction_filter import has_contradiction
 import feedparser
 from symbol_map import symbol_map
+# Reverse mapping: ticker -> base token (e.g. XRPUSDT -> XRP)
+symbol_to_token = {v: k for k, v in symbol_map.items()}
+
 from gpt_cache import get_cached_result, save_cached_result
 from confidence import calibrate_confidence
 from hashlib import md5
@@ -311,6 +314,44 @@ def get_futures_price(symbol):
     except:
         return None
 
+def is_ticker_consistent_with_context(ticker, title, summary):
+    """
+    Ensure the selected ticker is explicitly referenced in the news title or summary.
+    This prevents false matches like ACTUSDT from 'CLARITY ACT'.
+    """
+    base_token = symbol_to_token.get(ticker)
+    if not base_token:
+        return False
+
+    content = f"{title} {summary}".upper()
+
+    # Direct token match
+    if base_token in content:
+        return True
+
+    # Alias-based matching (expand as needed)
+    token_aliases = {
+        "BTC": ["BITCOIN"],
+        "ETH": ["ETHEREUM"],
+        "XRP": ["RIPPLE"],
+        "DOGE": ["DOGECOIN"],
+        "SHIB": ["SHIBA", "SHIBA INU"],
+        "PEPE": ["PEPECOIN"],
+        "ADA": ["CARDANO"],
+        "SOL": ["SOLANA"],
+        "BNB": ["BINANCE COIN", "BSC"],
+        "DOT": ["POLKADOT"],
+        "LTC": ["LITECOIN"],
+        "AVAX": ["AVALANCHE"],
+        "MATIC": ["POLYGON"],
+    }
+
+    for alias in token_aliases.get(base_token, []):
+        if alias in content:
+            return True
+
+    return False
+
 # === MAIN ===
 def main():
     news = get_rss_news()
@@ -394,6 +435,14 @@ def main():
         if not ticker or ticker == "USDT":
             continue
 
+        # 🚨 FINAL CONTEXT VALIDATION (title + summary vs ticker)
+        if not is_ticker_consistent_with_context(ticker, title, summary):
+            print(
+                f"❌ BLOCKED: Ticker {ticker} not consistent with news context | "
+                f"Title: {title}"
+            )
+            continue
+
         price_at_signal = get_futures_price(ticker)
         if price_at_signal is None:
             continue
@@ -439,14 +488,6 @@ def main():
         })
 
         chart_link = f"https://www.tradingview.com/symbols/{ticker}/"
-
-        # 🚨 Block if title clearly mentions a different asset than the selected ticker
-        for major_token in MAJOR_ASSETS:
-            if major_token in title.upper():
-                expected_symbol = symbol_map.get(major_token)
-                if expected_symbol and ticker != expected_symbol:
-                    print(f"❌ BLOCKED: Title mentions {major_token}, but ticker is {ticker}")
-                    continue  # skip this signal
 
         message = f"""{confidence_banner}{contradiction_warning}📊 Signal from news for {ticker}: {signal}
 {label} {title}

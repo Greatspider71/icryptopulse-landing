@@ -40,10 +40,15 @@ def start(update: Update, context: CallbackContext):
     user = update.effective_user
     update.message.reply_text(
         f"👋 Hello {user.first_name or 'there'}!\n\n"
-        "Welcome to iCryptoPulse AI.\n\n"
-        "📌 Use /subscribe to get the VIP invite link.\n"
-        "📥 Use /register your_email@example.com after subscribing to unlock premium signals.\n\n"
-        "ℹ️ Use /explain to understand how signals and confidence work."
+        "<b>Welcome to iCryptoPulse AI</b>\n\n"
+        "📢 Free-tier users get TA summaries & low-confidence alerts.\n"
+        "💳 Use <b>/subscribe</b> to start a 1-month VIP trial.\n"
+        "📥 After subscribing, use:\n"
+        "<code>/register your_email@example.com</code>\n\n"
+        "ℹ️ Use <b>/explain</b> to understand signals & confidence.\n"
+        "🔎 Use <b>/about</b> to see how this bot works.\n"
+        "❓ Need help? Type <b>/help</b> anytime.",
+        parse_mode=ParseMode.HTML
     )
     log_event(f"User {user.id} started bot")
 
@@ -171,10 +176,49 @@ def forcepost(update: Update, context: CallbackContext):
 
     try:
         bot = Bot(token=TELEGRAM_BOT_TOKEN)
-        bot.send_message(chat_id=VIP_CHAT_ID, text=message, parse_mode=ParseMode.MARKDOWN)
+        bot.send_message(chat_id=VIP_CHAT_ID, text=message, parse_mode=ParseMode.HTML)
         update.message.reply_text("✅ Signal sent to VIP channel.")
     except Exception as e:
         update.message.reply_text(f"❌ Failed to post signal: {e}")
+
+def help_command(update: Update, context: CallbackContext):
+    update.message.reply_text(
+        "<b>🆘 iCryptoPulse AI — Help</b>\n\n"
+        "<b>Available Commands:</b>\n"
+        "• /start — Start the bot\n"
+        "• /about — How iCryptoPulse works\n"
+        "• /explain — Signal & confidence explanation\n"
+        "• /subscribe — Start VIP trial\n"
+        "• /register your_email@example.com — Link subscription\n"
+        "• /summary — Daily VIP summary\n"
+        "• /status — System status (VIP/Admin)\n\n"
+        "<b>Signal Types:</b>\n"
+        "• 🟢 BUY / 🔴 SELL — High-confidence signals\n"
+        "• ⚠️ Low-Confidence — Awareness only\n"
+        "• TA-only updates when news is quiet\n\n"
+        "⚠️ <i>Not financial advice. Educational use only.</i>",
+        parse_mode=ParseMode.HTML
+    )
+
+def about(update: Update, context: CallbackContext):
+    update.message.reply_text(
+        "<b>ℹ️ About iCryptoPulse AI</b>\n\n"
+        "iCryptoPulse AI delivers <b>news-driven crypto signals</b> "
+        "combined with <b>real-time technical indicators</b>.\n\n"
+        "<b>How it works:</b>\n"
+        "1️⃣ Scan trusted crypto news\n"
+        "2️⃣ AI filters noise & low-quality content\n"
+        "3️⃣ Signals validated with RSI, MA & volume\n"
+        "4️⃣ Only liquid, high-volume Binance futures used\n\n"
+        "<b>User Tiers:</b>\n"
+        "• 🆓 Free — TA summaries & low-confidence alerts\n"
+        "• ⭐ VIP — High-confidence signals & summaries\n"
+        "• 🛡 VVIP — Permanent VIP (invite-only)\n\n"
+        "💳 New users get <b>1 month VIP free</b>.\n\n"
+        "⚠️ <i>This bot does NOT provide financial advice.</i>\n"
+        "AI-generated insights for learning & research.",
+        parse_mode=ParseMode.HTML
+    )
 
 # === Boot the Bot ===
 def main():
@@ -188,6 +232,8 @@ def main():
     dp.add_handler(CommandHandler("summary", summary))
     dp.add_handler(CommandHandler("explain", explain))
     dp.add_handler(CommandHandler("forcepost", forcepost))
+    dp.add_handler(CommandHandler("help", help_command))
+    dp.add_handler(CommandHandler("about", about))
 
     print("🤖 Bot is running. Press Ctrl+C to stop.")
     updater.start_polling()
