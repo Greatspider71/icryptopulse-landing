@@ -54,16 +54,35 @@ def update_subscriber(telegram_id, email):
         return False
 
 def get_subscription_status(telegram_id):
-    """Returns whether user is paid or VIP and expiry date"""
-    with open(DB_FILE, "r") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            if row["telegram_id"] == str(telegram_id):
-                is_paid = row["is_paid"] == "1"
-                is_vip = row["is_vip"] == "1"
-                expires_on = row["expires_on"]
-                return is_paid, is_vip, expires_on
-    return False, False, None
+    """
+    Returns:
+    - is_paid (str): "1" or "0"
+    - is_vip (str): "1" or "0"
+    - expires_on (str or None)
+    """
+    try:
+        with open("subscriber_db.csv", "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+
+            for row in reader:
+                if row.get("telegram_id") == str(telegram_id):
+                    is_paid = row.get("is_paid", "0").strip()
+                    is_vip = row.get("is_vip", "0").strip()
+                    expires_on = row.get("expires_on", "").strip()
+
+                    # Normalize empty expiry
+                    if expires_on == "":
+                        expires_on = None
+
+                    return is_paid, is_vip, expires_on
+
+    except FileNotFoundError:
+        print("⚠️ subscriber_db.csv not found.")
+    except Exception as e:
+        print(f"❌ Error reading subscriber_db.csv: {e}")
+
+    # Default: Free user
+    return "0", "0", None
 
 def handle_register_command(telegram_id, email):
     """Main handler for /register <email> command"""

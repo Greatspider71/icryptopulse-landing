@@ -115,39 +115,81 @@ def log_skipped_news(title, summary, source, reason, score, category):
             writer.writeheader()
         writer.writerow(row)
 
-def log_to_csv(signal, label, confidence, title, reason, url, chart_link, ticker, price_at_signal, technicals):
+def log_to_csv(
+    signal,
+    label,
+    confidence,
+    title,
+    reason,
+    url,
+    chart_link,
+    ticker,
+    price_at_signal,
+    technicals
+):
+    fieldnames = [
+        "Timestamp",
+        "Asset",
+        "Signal",
+        "Label",
+        "Confidence",
+        "Headline",
+        "Reason",
+        "SignalPrice",
+        "Price_Change_%",
+        "RSI",
+        "RSI_Label",
+        "RSI_Trend",
+        "MA_Crossover",
+        "VolumeSpike",
+        "SourceURL",
+        "ChartURL"
+    ]
+
     row = {
         "Timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+        "Asset": ticker,
         "Signal": signal,
         "Label": label,
         "Confidence": confidence,
-        "Title": title,
+        "Headline": title,
         "Reason": reason,
-        "Asset": ticker,
-        "Price_at_Signal": price_at_signal,
-        "Price_after_3h": "",
+        "SignalPrice": price_at_signal,
         "Price_Change_%": "",
-        "URL": url,
-        "ChartLink": chart_link or "",
         "RSI": technicals.get("rsi", ""),
-        "Volume": technicals.get("volume_spike", "")
+        "RSI_Label": technicals.get("rsi_label", ""),
+        "RSI_Trend": technicals.get("rsi_trend", ""),
+        "MA_Crossover": technicals.get("ma_crossover", ""),
+        "VolumeSpike": technicals.get("volume_spike", ""),
+        "SourceURL": url,
+        "ChartURL": chart_link or ""
     }
+
     file_exists = os.path.isfile(CSV_FILE)
-    with open(CSV_FILE, mode='a', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=row.keys())
+
+    with open(CSV_FILE, mode="a", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+
         if not file_exists:
             writer.writeheader()
+
         writer.writerow(row)
-    # Also add to pending_prices.csv
-    with open(PENDING_PRICES_FILE, mode='a', newline='', encoding='utf-8') as f:
-        pending_writer = csv.DictWriter(f, fieldnames=["Timestamp", "Asset", "Price_at_Signal", "Check_After"])
-        if not os.path.exists(PENDING_PRICES_FILE) or os.path.getsize(PENDING_PRICES_FILE) == 0:
+
+    # Add to pending_prices.csv
+    check_after = (datetime.utcnow() + timedelta(hours=3)).strftime("%Y-%m-%d %H:%M:%S")
+    with open(PENDING_PRICES_FILE, mode="a", newline="", encoding="utf-8") as f:
+        pending_writer = csv.DictWriter(
+            f,
+            fieldnames=["Timestamp", "Asset", "SignalPrice", "Check_After"]
+        )
+
+        if f.tell() == 0:
             pending_writer.writeheader()
-        check_after = (datetime.utcnow() + timedelta(hours=3)).strftime("%Y-%m-%d %H:%M:%S")
+
         pending_writer.writerow({
             "Timestamp": row["Timestamp"],
             "Asset": ticker,
-            "Price_at_Signal": price_at_signal,
+            "SignalPrice": price_at_signal,
             "Check_After": check_after
         })
 

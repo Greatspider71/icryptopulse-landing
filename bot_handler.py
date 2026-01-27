@@ -130,7 +130,7 @@ def summary(update: Update, context: CallbackContext):
         events = load_upcoming_events()
         message = format_summary(signals, events)
 
-        update.message.reply_text(message, parse_mode="Markdown")
+        update.message.reply_text(message, parse_mode=ParseMode.HTML)
     except Exception as e:
         update.message.reply_text("❌ Error generating summary.")
         print("Error in /summary:", e)
@@ -144,7 +144,7 @@ def explain(update: Update, context: CallbackContext):
         "• *Confidence (%)* — How reliable the AI thinks the signal is.\n"
         "It considers news quality, sentiment clarity, ticker match, and contradictions.\n\n"
         "⚠️ *This is not financial advice.*",
-        parse_mode="Markdown"
+        parse_mode=ParseMode.HTML
     )
 
 def forcepost(update: Update, context: CallbackContext):
@@ -220,6 +220,96 @@ def about(update: Update, context: CallbackContext):
         parse_mode=ParseMode.HTML
     )
 
+def status(update: Update, context: CallbackContext):
+    telegram_id = str(update.effective_user.id)
+    is_paid, is_vip, expires_on = get_subscription_status(telegram_id)
+
+    # 🧠 Plan type logic
+    if is_vip == "1":
+        plan = "VVIP"
+        days_left = "Unlimited"
+    elif is_paid == "1" and expires_on:
+        try:
+            dt = datetime.strptime(expires_on, "%Y-%m-%dT%H:%M:%S")
+            remaining = (dt - datetime.utcnow()).days
+            plan = "VIP (Trial)" if remaining <= 30 else "VIP"
+            days_left = f"{remaining} days" if remaining > 0 else "Expired"
+        except:
+            plan = "VIP"
+            days_left = "Unknown"
+    else:
+        plan = "Free"
+        days_left = "-"
+
+    # 🧠 Get last signal from log (robust to schema changes)
+    last_time = last_asset = last_conf = "N/A"
+    try:
+        with open("signals_log.csv", newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            rows = list(reader)
+            if rows:
+                last = rows[-1]
+                last_time = last.get("Timestamp", "N/A")
+                last_asset = last.get("Asset", last.get("Signal", "N/A"))
+                last_conf = last.get("Confidence", "N/A")
+    except Exception as e:
+        print("Status read error:", e)
+
+    # 🧠 Count signals today
+    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+    signal_count = 0
+    try:
+        with open("signals_log.csv", newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            signal_count = sum(1 for row in reader if row["Timestamp"].startswith(today_str))
+    except:
+        pass
+
+    # 🧠 Count skipped today
+    skipped_count = 0
+    try:
+        with open("skipped_signals_log.csv", newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            skipped_count = sum(1 for row in reader if row["Timestamp"].startswith(today_str))
+    except:
+        pass
+
+    # ✅ Build status message
+    message = (
+        f"<b>✅ System Status:</b>\n"
+        f"• Plan: <b>{plan}</b>\n"
+        f"• Days remaining: <b>{days_left}</b>\n"
+        f"• Last Signal: {last_time} ({last_asset})\n"
+        f"• Confidence: {last_conf}%\n"
+        f"• Signals Today: {signal_count}\n"
+        f"• Skipped Articles Today: {skipped_count}"
+    )
+
+    update.message.reply_text(message, parse_mode=ParseMode.HTML)
+
+def dashboard(update: Update, context: CallbackContext):
+    telegram_id = str(update.effective_user.id)
+    is_paid, is_vip, _ = get_subscription_status(telegram_id)
+
+    if not (is_paid or is_vip):
+        update.message.reply_text("🚫 VIP access only. Use /register to unlock dashboard access.")
+        return
+
+    try:
+        from telegram import InputFile
+
+        # Re-generate dashboard if needed
+        os.system("python3 dashboard_generator.py")
+
+        if os.path.exists("dashboard.html"):
+            with open("dashboard.html", "rb") as f:
+                update.message.reply_document(document=InputFile(f), filename="dashboard.html")
+        else:
+            update.message.reply_text("❌ dashboard.html not found.")
+
+    except Exception as e:
+        update.message.reply_text(f"❌ Failed to send dashboard: {str(e)}")
+
 # === Boot the Bot ===
 def main():
     updater = Updater(token=TELEGRAM_BOT_TOKEN, use_context=True)
@@ -234,6 +324,8 @@ def main():
     dp.add_handler(CommandHandler("forcepost", forcepost))
     dp.add_handler(CommandHandler("help", help_command))
     dp.add_handler(CommandHandler("about", about))
+    dp.add_handler(CommandHandler("status", status))
+    dp.add_handler(CommandHandler("dashboard", dashboard))
 
     print("🤖 Bot is running. Press Ctrl+C to stop.")
     updater.start_polling()

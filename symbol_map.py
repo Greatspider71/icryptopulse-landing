@@ -21,6 +21,7 @@ symbol_map = {
   "ACE": "ACEUSDT",
   "ACH": "ACHUSDT",
   "ACT": "ACTUSDT",
+  "ACU": "ACUUSDT",
   "ACX": "ACXUSDT",
   "ADA": "ADAUSDT",
   "AERGO": "AERGOUSDT",
@@ -180,6 +181,7 @@ symbol_map = {
   "EDU": "EDUUSDT",
   "EGLD": "EGLDUSDT",
   "EIGEN": "EIGENUSDT",
+  "ELSA": "ELSAUSDT",
   "ENA": "ENAUSDT",
   "ENJ": "ENJUSDT",
   "ENS": "ENSUSDT",
@@ -199,6 +201,7 @@ symbol_map = {
   "FET": "FETUSDT",
   "FHE": "FHEUSDT",
   "FIDA": "FIDAUSDT",
+  "FIGHT": "FIGHTUSDT",
   "FIL": "FILUSDT",
   "FIO": "FIOUSDT",
   "FIS": "FISUSDT",
@@ -451,6 +454,7 @@ symbol_map = {
   "SIREN": "SIRENUSDT",
   "SKATE": "SKATEUSDT",
   "SKL": "SKLUSDT",
+  "SKR": "SKRUSDT",
   "SKY": "SKYUSDT",
   "SKYAI": "SKYAIUSDT",
   "SLERF": "SLERFUSDT",
@@ -463,6 +467,7 @@ symbol_map = {
   "SONIC": "SONICUSDT",
   "SOON": "SOONUSDT",
   "SOPH": "SOPHUSDT",
+  "SPACE": "SPACEUSDT",
   "SPELL": "SPELLUSDT",
   "SPK": "SPKUSDT",
   "SPORTFUN": "SPORTFUNUSDT",
@@ -581,5 +586,6 @@ symbol_map = {
   "ZRC": "ZRCUSDT",
   "ZRO": "ZROUSDT",
   "ZRX": "ZRXUSDT",
-  "\u5e01\u5b89\u4eba\u751f": "\u5e01\u5b89\u4eba\u751fUSDT"
+  "\u5e01\u5b89\u4eba\u751f": "\u5e01\u5b89\u4eba\u751fUSDT",
+  "\u6211\u8e0f\u9a6c\u6765\u4e86": "\u6211\u8e0f\u9a6c\u6765\u4e86USDT"
 }
