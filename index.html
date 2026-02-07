@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>iCryptoPulse AI – Crypto News Signals</title>
+  <title>iCryptoPulse AI – Crypto News Insights</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
     body {
@@ -28,14 +28,15 @@
 
     h1 {
       font-size: 2.5rem;
-      margin-bottom: 1rem;
+      margin: 0.5rem 0 1rem;
     }
 
     p {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
+      line-height: 1.5;
       color: #c9d1d9;
-      max-width: 600px;
-      margin-bottom: 2rem;
+      max-width: 640px;
+      margin: 0 0 1.5rem;
     }
 
     .button-group {
@@ -43,53 +44,80 @@
       flex-direction: column;
       gap: 1rem;
       width: 100%;
-      max-width: 300px;
+      max-width: 340px;
+      margin: 0.5rem 0 1.25rem;
     }
 
     .btn {
       padding: 1rem;
-      font-size: 1.1rem;
-      font-weight: bold;
+      font-size: 1.05rem;
+      font-weight: 700;
       color: #fff;
       background-color: #238636;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       text-decoration: none;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.2s ease;
     }
 
-    .btn:hover {
-      background-color: #2ea043;
-    }
+    .btn:hover { background-color: #2ea043; }
 
     .btn-outline {
       background-color: transparent;
       border: 2px solid #238636;
     }
 
+    .hint {
+      font-size: 0.95rem;
+      color: #8b949e;
+      margin-bottom: 2rem;
+    }
+
     .footer {
-      margin-top: 3rem;
+      margin-top: 2.5rem;
       font-size: 0.9rem;
       color: #8b949e;
+    }
+
+    @media (max-width: 420px) {
+      body { padding: 1.25rem; }
+      h1 { font-size: 2.1rem; }
+      p { font-size: 1.05rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- LOGO -->
   <img src="iCryptoPulseAI.png" alt="iCryptoPulse Logo" class="logo" />
 
   <h1>iCryptoPulse AI</h1>
-  <p>Receive real-time crypto trading signals based on AI-powered news and technical analysis.<br/> Join our private Telegram channel and stay ahead of the market.</p>
+
+  <p>
+    AI-driven crypto insights combining <b>news intelligence</b> and <b>technical analysis</b>.<br/>
+    Start with free market snapshots, then upgrade to VIP for full intraday trading guidance.
+  </p>
 
   <div class="button-group">
-    <a href="https://buy.stripe.com/test_5kQ3cu0MF6VSbBx3gyaEE00" class="btn">💳 Subscribe Now</a>
-    <a href="https://t.me/iCryptoPulse_Bot?start" class="btn btn-outline">🤖 Join Telegram Bot</a>
+    <a href="https://t.me/iCryptoPulse" class="btn" target="_blank" rel="noopener noreferrer">📊 View Free Market Updates</a>
+    <a href="https://t.me/iCryptoPulse_Bot?start=vip" class="btn btn-outline" target="_blank" rel="noopener noreferrer">🤖 Start with Telegram Bot</a>
+    <a href="https://buy.stripe.com/test_5kQ3cu0MF6VSbBx3gyaEE00" class="btn btn-outline" target="_blank" rel="noopener noreferrer">💳 Upgrade to VIP</a>
   </div>
 
+  <div class="hint">
+    No spam. Risk-aware. Transparent updates — even on quiet markets.
+  </div>
+
+  <p>
+    <b>How it works:</b><br/>
+    1️⃣ Free Telegram channel — market snapshots & context<br/>
+    2️⃣ Telegram bot — guided onboarding & features<br/>
+    3️⃣ VIP channel — market pulse + high-confidence signals (when conditions align)
+  </p>
+
   <div class="footer">
-    ⚠️ Not financial advice. Signals are for informational purposes only.
+    ⚠️ Not financial advice. Insights are for informational purposes only.<br/>
+    <a href="terms.html">Terms of Use</a> · <a href="disclaimer.html">Disclaimer</a>
   </div>
 
 </body>
