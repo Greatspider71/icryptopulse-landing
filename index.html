@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>iCryptoPulse Research Lab</title>
-<meta name="description" content="Research only. A live paper-trading study of crypto trading costs. Not financial advice. Not for trading.">
+<title>Crypto Cost Monitoring · iCryptoPulse</title>
+<meta name="description" content="Research only. Simulated crypto trading-cost monitoring. Not financial advice. Not for trading.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#141920" media="(prefers-color-scheme: dark)">
@@ -89,21 +89,6 @@ td.sym { font-weight: 650; }
 .ok svg { width: 14px; height: 14px; }
 .small { font-size: 13px; color: var(--ink-2); margin: 10px 0 0; }
 
-/* method */
-.method { margin-top: 40px; }
-.method h2.sec { font-size: 20px; letter-spacing: -.01em; margin: 0 0 4px; }
-.method > p { color: var(--ink-2); margin: 0 0 18px; max-width: 760px; }
-.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.steps .card { margin: 0 !important; }
-.steps .n { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700;
-  font-size: 13px; display: grid; place-items: center; margin-bottom: 10px; }
-.steps h3 { font-size: 15px; margin: 0 0 6px; }
-.steps p { font-size: 13.5px; color: var(--ink-2); margin: 0; }
-.isnot { margin-top: 16px; display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; background: var(--notice-bg);
-  border: 1px solid var(--notice-line); border-radius: var(--radius); padding: 16px 18px; font-size: 14px; }
-.isnot svg { width: 20px; height: 20px; color: var(--caution); margin-top: 1px; }
-.isnot p { margin: 0; }
-@media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }
 
 /* terms gate */
 .gate { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: flex; align-items: center; justify-content: center;
@@ -143,16 +128,15 @@ td.sym { font-weight: 650; }
 
 <header class="topbar"><div class="in">
   <a class="brand" href="./"><span class="mark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 9h3l2-5 3 9 2-6 1.2 2H15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>iCryptoPulse <small>Research Lab</small></a>
-  <nav class="nav"><a href="#dashboard">Dashboard</a><a href="#method" class="opt">Method</a><a href="terms.html">Terms</a></nav>
+  <nav class="nav"><a href="#dashboard">Dashboard</a><a href="terms.html">Terms</a></nav>
 </div></header>
 <div class="notice" role="note"><div class="in"><strong>Research only.</strong><span>Simulated trades · Not financial advice · Not for trading</span><a href="terms.html">Terms of Use</a></div></div>
 
 <main class="page" id="app" hidden>
   <section class="hero" id="dashboard">
     <div>
-      <p class="eyebrow">Live experiment · Paper trading</p>
-      <h1>What does it really cost to trade crypto?</h1>
-      <p class="lede">A simulated basket is rebalanced once a day against live Binance order books. Every fill records the exchange fee and the price paid beyond the mid-price, so research can rely on measured costs rather than assumptions.</p>
+      <p class="eyebrow">Research · Simulated trades</p>
+      <h1>Crypto Cost Monitoring</h1>
     </div>
     <dl class="facts">
       <div><dt>Run</dt><dd id="f-run">–</dd></div>
@@ -179,13 +163,13 @@ td.sym { font-weight: 650; }
     <div class="col-main">
       <section class="card">
         <div class="card-h"><h2>Paper equity</h2><span class="tag" id="chart-tag">Daily marks + live value</span></div>
-        <p class="sub">Simulated US$. One point per daily rebalance; the last point is valued at live prices. Dashed line: starting value.</p>
+        <p class="sub">Simulated US$. One point per daily rebalance; the last point is at live prices.</p>
         <div class="chart" id="chart"></div>
       </section>
 
       <section class="card">
         <div class="card-h"><h2>Simulated holdings</h2><span class="tag" id="pos-tag">–</span></div>
-        <p class="sub">Valued at live Binance prices. Quantities change only at the daily rebalance.</p>
+        <p class="sub">Valued at live prices. Quantities change only at the daily rebalance.</p>
         <div class="scroll"><table id="pos"><thead><tr><th>Coin</th><th>Quantity</th><th>Daily mark</th><th>Live price</th><th>Change</th><th>Live value US$</th><th>Weight</th></tr></thead><tbody></tbody></table></div>
       </section>
 
@@ -241,25 +225,11 @@ td.sym { font-weight: 650; }
     </aside>
   </div>
 
-  <section class="method" id="method">
-    <h2 class="sec">How the experiment works</h2>
-    <p>Backtests need an assumption about trading costs. This run replaces the assumption with measurement, using the same rebalancing rules as the research engine.</p>
-    <div class="steps">
-      <div class="card"><div class="n">1</div><h3>Daily target</h3><p>At 08:05 Singapore time the ten most traded eligible coins are weighted by inverse volatility, using only completed daily data.</p></div>
-      <div class="card"><div class="n">2</div><h3>Simulated fills</h3><p>Orders are filled on paper against the live order book: best bid or ask, depth impact, the account's real fee, and exchange size rules.</p></div>
-      <div class="card"><div class="n">3</div><h3>Record and publish</h3><p>Fills, holdings and costs are stored in a size-capped database and published here. Live prices update in your browser every 15 seconds.</p></div>
-    </div>
-    <div class="isnot">
-      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 18 17H2L10 2.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <p><strong>This is a measurement control, not a strategy.</strong> It is not expected to beat anything, it is not a signal, and nothing on this site is a recommendation. Do not use it to trade.</p>
-    </div>
-  </section>
 </main>
 
 <footer class="foot"><div class="in">
   <div>
     <p><strong style="color:var(--ink-2)">iCryptoPulse Research Lab.</strong> Research only. Not financial advice. Simulated results have known limitations and do not predict future results.</p>
-    <p>Market data: Binance public market data. Not affiliated with, endorsed by or sponsored by Binance.</p>
     <p id="gen-line">Research data file generated <span id="gen">–</span>.</p>
   </div>
   <div class="links"><a href="terms.html">Terms of Use</a><a href="disclaimer.html">Disclaimer</a><a href="privacy.html">Privacy</a></div>
@@ -270,7 +240,7 @@ td.sym { font-weight: 650; }
 <script>
 (function () {
   "use strict";
-  var TERMS_VERSION = "2026-11-08";
+  var TERMS_VERSION = "2026-11-09";
   var KEY = "icp_terms_accepted";
   var PRICE_URL = "https://data-api.binance.vision/api/v3/ticker/price?symbols=";
   var TRADE_ROWS = 20;

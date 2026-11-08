@@ -2,8 +2,5 @@
 *.pyc
 __pycache__/
 .idea/
-logs/
-*.csvsignals_log.csv
-skipped_signals_log.csv
-pending_prices.csv
-gpt_cache.json
+*.py
+.DS_Store
