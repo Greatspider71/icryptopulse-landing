@@ -6,76 +6,128 @@
 <title>iCryptoPulse Research Lab</title>
 <meta name="description" content="Research only. A live paper-trading study of crypto trading costs. Not financial advice. Not for trading.">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141920" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.ico">
+<link rel="stylesheet" href="assets/site.css?v=2">
 <style>
-:root {
-  --bg: #f6f6f3; --surface: #ffffff; --ink: #0b0b0b; --ink2: #52514e; --muted: #8a8984; --line: #e4e3df;
-  --accent: #2a78d6; --accent-soft: #e8f0fb; --warn: #b4521f; --warn-soft: #fbeee6; --good: #137a55;
-  --banner: #1c1c1a; --banner-ink: #f6f6f3; color-scheme: light;
+/* hero */
+.hero { display: grid; grid-template-columns: 1fr auto; gap: 24px 40px; align-items: end; margin-bottom: 22px; }
+.facts { display: grid; grid-template-columns: repeat(2, auto); gap: 10px 28px; margin: 0; font-size: 13px; }
+.facts dt { color: var(--muted); font-size: 12px; }
+.facts dd { margin: 1px 0 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+@media (max-width: 860px) { .hero { grid-template-columns: 1fr; } }
+.statusline { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; font-size: 13px; color: var(--muted); margin: 0 0 12px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--good); display: inline-block; margin-right: 7px; vertical-align: 1px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--good) 22%, transparent); }
+.dot.stale { background: var(--caution); box-shadow: 0 0 0 3px color-mix(in srgb, var(--caution) 22%, transparent); }
+
+/* KPI strip */
+.kpis { display: grid; grid-template-columns: 1.5fr repeat(4, 1fr); padding: 0; }
+.kpi { padding: 18px 20px; border-left: 1px solid var(--line); min-width: 0; }
+.kpi:first-child { border-left: 0; }
+.kpi .k { font-size: 12px; color: var(--muted); font-weight: 550; }
+.kpi .v { font-size: 22px; font-weight: 680; letter-spacing: -.01em; margin-top: 4px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kpi .s { font-size: 12px; color: var(--muted); margin-top: 3px; font-variant-numeric: tabular-nums; }
+.kpi.lead .v { font-size: 32px; }
+@media (max-width: 960px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .kpi { border-left: 0; border-top: 1px solid var(--line); }
+  .kpi.lead { grid-column: 1 / -1; border-top: 0; }
+  .kpi:nth-child(odd):not(.lead) { border-left: 1px solid var(--line); }
 }
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #111210; --surface: #1b1c1a; --ink: #f3f2ee; --ink2: #b9b7b0; --muted: #85837d; --line: #2e2f2c;
-    --accent: #5b9be6; --accent-soft: #1d2a3b; --warn: #f08a55; --warn-soft: #3a2519; --good: #3cc690;
-    --banner: #2a2b28; --banner-ink: #f3f2ee; color-scheme: dark; }
-}
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-a { color: var(--accent); }
-.banner { position: sticky; top: 0; z-index: 5; background: var(--banner); color: var(--banner-ink); font-size: 13px;
-  padding: calc(8px + env(safe-area-inset-top, 0px)) 16px 8px; text-align: center; }
-.banner a { color: inherit; font-weight: 600; }
-.wrap { max-width: 1040px; margin: 0 auto; padding: 20px 16px 40px; }
-header h1 { font-size: 24px; margin: 4px 0 2px; letter-spacing: -0.01em; }
-header p { margin: 0; color: var(--ink2); }
-.status { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 12px 0 18px; font-size: 13px; color: var(--ink2); }
-.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--good); margin-right: 6px; vertical-align: 1px; }
-.dot.stale { background: var(--warn); }
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
-.tile .k { font-size: 12px; color: var(--ink2); }
-.tile .v { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; margin-top: 2px; }
-.tile .s { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.up { color: var(--good); } .down { color: var(--warn); }
-section.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 14px; }
-section.card h2 { font-size: 16px; margin: 0 0 4px; }
-section.card .sub { font-size: 13px; color: var(--ink2); margin: 0 0 10px; }
+
+/* two-column layout: main content + side rail */
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; margin-top: 16px; align-items: start; }
+.rail .card + .card, .col-main .card + .card { margin-top: 16px; }
+@media (max-width: 1020px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* chart */
 .chart { position: relative; }
-.chart svg { display: block; width: 100%; height: 240px; }
-.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 12px; padding: 6px 8px;
-  border-radius: 6px; white-space: nowrap; transform: translate(-50%, -115%); }
-.scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.chart svg { display: block; width: 100%; height: 260px; overflow: visible; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 12px; line-height: 1.35;
+  padding: 7px 9px; border-radius: 7px; white-space: nowrap; transform: translate(-50%, calc(-100% - 12px)); box-shadow: var(--shadow); }
+.tip b { font-weight: 650; }
+.empty { color: var(--muted); font-size: 13px; padding: 28px 0; text-align: center; }
+
+/* tables */
+.scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -20px; padding: 0 20px; }
 table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
-th, td { text-align: right; padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-th:first-child, td:first-child { text-align: left; }
-th { font-weight: 600; color: var(--ink2); font-size: 12px; }
-.meter { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin: 6px 0 2px; }
-.meter i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
-.meter i.hot { background: var(--warn); }
-.limits { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-.note { background: var(--accent-soft); border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--ink); }
-.empty { color: var(--muted); font-size: 13px; padding: 18px 0; text-align: center; }
-footer { margin-top: 28px; font-size: 12px; color: var(--muted); text-align: center; }
-footer a { color: var(--ink2); margin: 0 6px; }
-.gate { position: fixed; inset: 0; z-index: 10; background: var(--bg);
-  display: flex; align-items: center; justify-content: center; padding: 16px; }
-.gate .box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; max-width: 520px; width: 100%;
-  padding: 20px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,.18); }
-.gate h2 { margin: 0 0 8px; font-size: 19px; }
-.gate ul { padding-left: 18px; margin: 8px 0 14px; } .gate li { margin: 4px 0; }
-.gate label { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; background: var(--warn-soft); padding: 10px; border-radius: 8px; }
-.gate input { margin-top: 3px; width: 18px; height: 18px; flex: none; }
-.gate button { margin-top: 14px; width: 100%; padding: 12px; font-size: 15px; font-weight: 650; border: 0; border-radius: 10px;
-  background: var(--accent); color: #fff; cursor: pointer; }
-.gate button:disabled { opacity: .45; cursor: not-allowed; }
-[hidden] { display: none !important; }
+th, td { text-align: right; padding: 9px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; padding-left: 0; }
+th:last-child, td:last-child { padding-right: 0; }
+thead th { font-weight: 600; color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; border-bottom-color: var(--line-strong); }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: var(--surface-2); }
+td.sym { font-weight: 650; }
+.wbar { display: inline-flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.wbar i { display: block; width: 56px; height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.wbar i b { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+.side { font-size: 11.5px; font-weight: 650; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+.more { margin-top: 12px; background: none; border: 1px solid var(--line-strong); color: var(--ink-2); border-radius: 8px; padding: 7px 12px;
+  font: inherit; font-size: 13px; cursor: pointer; }
+.more:hover { background: var(--surface-2); }
+
+/* rail widgets */
+.big { font-size: 28px; font-weight: 700; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.big small { font-size: 14px; color: var(--muted); font-weight: 500; margin-left: 4px; }
+.bullet { position: relative; height: 10px; background: var(--surface-2); border-radius: 5px; margin: 14px 0 6px; }
+.bullet .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 5px; }
+.bullet .ref { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--ink); border-radius: 1px; }
+.scale { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rows { margin: 14px 0 0; font-size: 13px; }
+.rows div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: 1px solid var(--line); }
+.rows dt { color: var(--muted); } .rows dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.meter { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; margin: 8px 0 4px; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 4px; transition: width .4s; }
+.meter i.hot { background: var(--bad); }
+.limit + .limit { margin-top: 14px; }
+.limit .row { display: flex; justify-content: space-between; font-size: 13px; }
+.limit .row span:last-child { font-weight: 600; font-variant-numeric: tabular-nums; }
+.ok { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 650; color: var(--good); }
+.ok.bad { color: var(--bad); }
+.ok svg { width: 14px; height: 14px; }
+.small { font-size: 13px; color: var(--ink-2); margin: 10px 0 0; }
+
+/* method */
+.method { margin-top: 40px; }
+.method h2.sec { font-size: 20px; letter-spacing: -.01em; margin: 0 0 4px; }
+.method > p { color: var(--ink-2); margin: 0 0 18px; max-width: 760px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.steps .card { margin: 0 !important; }
+.steps .n { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700;
+  font-size: 13px; display: grid; place-items: center; margin-bottom: 10px; }
+.steps h3 { font-size: 15px; margin: 0 0 6px; }
+.steps p { font-size: 13.5px; color: var(--ink-2); margin: 0; }
+.isnot { margin-top: 16px; display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; background: var(--notice-bg);
+  border: 1px solid var(--notice-line); border-radius: var(--radius); padding: 16px 18px; font-size: 14px; }
+.isnot svg { width: 20px; height: 20px; color: var(--caution); margin-top: 1px; }
+.isnot p { margin: 0; }
+@media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }
+
+/* terms gate */
+.gate { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: flex; align-items: center; justify-content: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px)); overflow-y: auto; }
+.gate .box { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; max-width: 540px; width: 100%;
+  padding: 26px 26px 22px; box-shadow: 0 20px 60px rgba(0, 0, 0, .14); margin: auto; }
+.gate .brand { margin-bottom: 18px; }
+.gate h2 { margin: 0 0 8px; font-size: 21px; letter-spacing: -.01em; }
+.gate p { color: var(--ink-2); margin: 0 0 12px; }
+.gate ul { padding-left: 18px; margin: 0 0 18px; color: var(--ink-2); font-size: 14px; } .gate li { margin: 5px 0; }
+.gate label { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; background: var(--notice-bg); border: 1px solid var(--notice-line);
+  padding: 12px 14px; border-radius: 10px; cursor: pointer; }
+.gate input { margin-top: 2px; width: 18px; height: 18px; flex: none; accent-color: var(--accent); }
+.gate button { margin-top: 16px; width: 100%; padding: 13px; font: inherit; font-size: 15px; font-weight: 650; border: 0; border-radius: 10px;
+  background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+.gate button:disabled { opacity: .4; cursor: not-allowed; }
+.gate .fine { font-size: 12px; color: var(--muted); margin: 12px 0 0; text-align: center; }
 </style>
 </head>
 <body>
-<div class="banner">Research only · Simulated trades · Not financial advice · Not for trading · <a href="terms.html">Terms of Use</a></div>
 
 <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
   <div class="box">
+    <div class="brand"><span class="mark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 9h3l2-5 3 9 2-6 1.2 2H15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>iCryptoPulse <small>Research Lab</small></div>
     <h2 id="gate-title">Before you continue</h2>
     <p>This website publishes a <strong>research experiment</strong>: simulated (paper) trades of a passive crypto basket, run only to measure trading costs.</p>
     <ul>
@@ -85,73 +137,133 @@ footer a { color: var(--ink2); margin: 0 6px; }
     </ul>
     <label><input type="checkbox" id="agree"> <span>I have read and agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Use</a>. I understand this site is for research purposes only and is not financial advice, and <strong>I will not use anything on it to trade or invest</strong>.</span></label>
     <button id="enter" disabled>Agree and continue</button>
+    <p class="fine">Your agreement is remembered on this device only. See the <a href="privacy.html">Privacy Policy</a>.</p>
   </div>
 </div>
 
-<main class="wrap" id="app" hidden>
-  <header>
-    <h1>iCryptoPulse Research Lab</h1>
-    <p>Live paper-trading study: what does it really cost to trade crypto?</p>
-  </header>
-  <div class="status">
+<header class="topbar"><div class="in">
+  <a class="brand" href="./"><span class="mark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 9h3l2-5 3 9 2-6 1.2 2H15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>iCryptoPulse <small>Research Lab</small></a>
+  <nav class="nav"><a href="#dashboard">Dashboard</a><a href="#method" class="opt">Method</a><a href="terms.html">Terms</a></nav>
+</div></header>
+<div class="notice" role="note"><div class="in"><strong>Research only.</strong><span>Simulated trades · Not financial advice · Not for trading</span><a href="terms.html">Terms of Use</a></div></div>
+
+<main class="page" id="app" hidden>
+  <section class="hero" id="dashboard">
+    <div>
+      <p class="eyebrow">Live experiment · Paper trading</p>
+      <h1>What does it really cost to trade crypto?</h1>
+      <p class="lede">A simulated basket is rebalanced once a day against live Binance order books. Every fill records the exchange fee and the price paid beyond the mid-price, so research can rely on measured costs rather than assumptions.</p>
+    </div>
+    <dl class="facts">
+      <div><dt>Run</dt><dd id="f-run">–</dd></div>
+      <div><dt>Started</dt><dd id="f-start">–</dd></div>
+      <div><dt>Status</dt><dd id="f-status">–</dd></div>
+      <div><dt>Next scheduled rebalance</dt><dd id="f-next">–</dd></div>
+    </dl>
+  </section>
+
+  <div class="statusline">
     <span><span class="dot" id="live-dot"></span><span id="live-text">Connecting to live prices…</span></span>
     <span id="rebal-text"></span>
   </div>
 
-  <div class="tiles">
-    <div class="tile"><div class="k">Paper equity (live)</div><div class="v" id="t-eq">–</div><div class="s">simulated US$, not real money</div></div>
-    <div class="tile"><div class="k">Since last daily mark</div><div class="v" id="t-day">–</div><div class="s" id="t-day-s"></div></div>
-    <div class="tile"><div class="k">Since start</div><div class="v" id="t-all">–</div><div class="s" id="t-all-s"></div></div>
-    <div class="tile"><div class="k">Invested</div><div class="v" id="t-gross">–</div><div class="s">rest held as cash</div></div>
-    <div class="tile"><div class="k">Measured cost per trade</div><div class="v" id="t-cost">–</div><div class="s" id="t-cost-s"></div></div>
-    <div class="tile"><div class="k">Patient-order fill rate</div><div class="v" id="t-maker">–</div><div class="s" id="t-maker-s"></div></div>
+  <section class="card kpis" aria-label="Summary">
+    <div class="kpi lead"><div class="k">Paper equity · live</div><div class="v" id="t-eq">–</div><div class="s" id="t-eq-s">Simulated US$, not real money</div></div>
+    <div class="kpi"><div class="k">Since last daily mark</div><div class="v" id="t-day">–</div><div class="s" id="t-day-s">&nbsp;</div></div>
+    <div class="kpi"><div class="k">Invested</div><div class="v" id="t-gross">–</div><div class="s">rest held as cash</div></div>
+    <div class="kpi"><div class="k">Avg cost per trade</div><div class="v" id="t-cost">–</div><div class="s" id="t-cost-s">&nbsp;</div></div>
+    <div class="kpi"><div class="k">Patient-order fill rate</div><div class="v" id="t-maker">–</div><div class="s" id="t-maker-s">&nbsp;</div></div>
+  </section>
+
+  <div class="layout">
+    <div class="col-main">
+      <section class="card">
+        <div class="card-h"><h2>Paper equity</h2><span class="tag" id="chart-tag">Daily marks + live value</span></div>
+        <p class="sub">Simulated US$. One point per daily rebalance; the last point is valued at live prices. Dashed line: starting value.</p>
+        <div class="chart" id="chart"></div>
+      </section>
+
+      <section class="card">
+        <div class="card-h"><h2>Simulated holdings</h2><span class="tag" id="pos-tag">–</span></div>
+        <p class="sub">Valued at live Binance prices. Quantities change only at the daily rebalance.</p>
+        <div class="scroll"><table id="pos"><thead><tr><th>Coin</th><th>Quantity</th><th>Daily mark</th><th>Live price</th><th>Change</th><th>Live value US$</th><th>Weight</th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <section class="card">
+        <div class="card-h"><h2>Simulated fills</h2><span class="tag" id="fill-tag">–</span></div>
+        <p class="sub">Each order fills at the live best bid or ask, plus impact if it exceeds visible depth, plus the real exchange fee. 1 bp = 0.01%.</p>
+        <div class="scroll"><table id="trades"><thead><tr><th>Date (UTC)</th><th>Coin</th><th>Side</th><th>Size US$</th><th>Fill price</th><th>Fee bps</th><th>Beyond mid bps</th><th>Total bps</th></tr></thead><tbody></tbody></table></div>
+        <button class="more" id="more" hidden></button>
+      </section>
+    </div>
+
+    <aside class="rail">
+      <section class="card">
+        <h2>Measured cost vs assumption</h2>
+        <p class="sub" style="margin-bottom:6px">Average all-in cost per simulated trade.</p>
+        <div class="big" id="c-big">–<small>bps</small></div>
+        <div class="bullet" aria-hidden="true"><div class="fill" id="c-fill" style="width:0"></div><div class="ref" id="c-ref"></div></div>
+        <div class="scale"><span>0</span><span id="c-ref-l">assumed 30 bps</span><span id="c-max">40</span></div>
+        <dl class="rows">
+          <div><dt>Exchange fee</dt><dd id="c-fee">–</dd></div>
+          <div><dt>Paid beyond mid-price</dt><dd id="c-slip">–</dd></div>
+          <div><dt>Value-weighted total</dt><dd id="c-vw">–</dd></div>
+          <div><dt>90th percentile</dt><dd id="c-p90">–</dd></div>
+          <div><dt>Fills · volume</dt><dd id="c-n">–</dd></div>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>Patient orders</h2>
+        <p class="sub">Would a resting order at the best price have filled within 4 hours? Fewer fees if yes; checked at the next rebalance.</p>
+        <div class="big" id="p-big">–</div>
+        <dl class="rows">
+          <div><dt>Posted · checked</dt><dd id="p-n">–</dd></div>
+          <div><dt>Drift when unfilled</dt><dd id="p-drift">–</dd></div>
+        </dl>
+      </section>
+
+      <section class="card">
+        <div class="card-h"><h2>Loss limits</h2><span class="ok" id="l-ok"></span></div>
+        <p class="sub">Applied even to paper runs: a breach halts new purchases, as it would with real money.</p>
+        <div class="limit"><div class="row"><span>Loss since last daily mark</span><span id="l-day">–</span></div><div class="meter"><i id="m-day"></i></div></div>
+        <div class="limit"><div class="row"><span>Drawdown this month</span><span id="l-month">–</span></div><div class="meter"><i id="m-month"></i></div></div>
+      </section>
+
+      <section class="card">
+        <h2>Research status</h2>
+        <dl class="rows" style="margin-top:8px">
+          <div><dt>Strategy variants tested</dt><dd id="r-trials">–</dd></div>
+          <div><dt>Passed validation</dt><dd id="r-pass">–</dd></div>
+        </dl>
+        <p class="small" id="r-note"></p>
+      </section>
+    </aside>
   </div>
 
-  <section class="card">
-    <h2>Paper equity</h2>
-    <p class="sub">Daily marks after each rebalance, plus the live value now. Dashed line: starting value of US$<span id="init">–</span>.</p>
-    <div class="chart" id="chart"></div>
-  </section>
-
-  <section class="card">
-    <h2>Simulated holdings</h2>
-    <p class="sub">Valued at live Binance prices. Quantities change only at the daily rebalance.</p>
-    <div class="scroll"><table id="pos"><thead><tr><th>Coin</th><th>Quantity</th><th>Daily mark</th><th>Live price</th><th>Change</th><th>Live value</th><th>Weight</th></tr></thead><tbody></tbody></table></div>
-  </section>
-
-  <section class="card">
-    <h2>Measured trading costs</h2>
-    <p class="sub">Each simulated trade fills at the live best bid or ask, plus impact if the order exceeds visible depth, plus the real exchange fee. The research backtests assumed 30 bps (0.30%) per trade.</p>
-    <div class="scroll"><table id="trades"><thead><tr><th>Date (UTC)</th><th>Coin</th><th>Side</th><th>Size US$</th><th>Fill price</th><th>Fee bps</th><th>Above mid bps</th><th>Total bps</th></tr></thead><tbody></tbody></table></div>
-  </section>
-
-  <section class="card">
-    <h2>Loss-limit checks</h2>
-    <p class="sub">The owner's limits apply even to paper runs: a breach halts new purchases, as it would with real money.</p>
-    <div class="limits">
-      <div><div>Loss since last daily mark: <strong id="l-day">–</strong> of S$50</div><div class="meter"><i id="m-day" style="width:0"></i></div></div>
-      <div><div>Drawdown this month: <strong id="l-month">–</strong> of S$200</div><div class="meter"><i id="m-month" style="width:0"></i></div></div>
+  <section class="method" id="method">
+    <h2 class="sec">How the experiment works</h2>
+    <p>Backtests need an assumption about trading costs. This run replaces the assumption with measurement, using the same rebalancing rules as the research engine.</p>
+    <div class="steps">
+      <div class="card"><div class="n">1</div><h3>Daily target</h3><p>At 08:05 Singapore time the ten most traded eligible coins are weighted by inverse volatility, using only completed daily data.</p></div>
+      <div class="card"><div class="n">2</div><h3>Simulated fills</h3><p>Orders are filled on paper against the live order book: best bid or ask, depth impact, the account's real fee, and exchange size rules.</p></div>
+      <div class="card"><div class="n">3</div><h3>Record and publish</h3><p>Fills, holdings and costs are stored in a size-capped database and published here. Live prices update in your browser every 15 seconds.</p></div>
+    </div>
+    <div class="isnot">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 18 17H2L10 2.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.6v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <p><strong>This is a measurement control, not a strategy.</strong> It is not expected to beat anything, it is not a signal, and nothing on this site is a recommendation. Do not use it to trade.</p>
     </div>
   </section>
-
-  <section class="card">
-    <h2>About this experiment</h2>
-    <p class="sub" id="research"></p>
-    <div class="note">
-      This run holds a simple passive basket: the ten most traded eligible coins, sized by volatility, rebalanced once a day.
-      It is a <strong>measurement control, not a strategy</strong>, and is not expected to beat anything. Its only purpose is to
-      measure real execution costs and how often patient orders would fill, so that future research uses real numbers.
-      Nothing here is a signal. Do not use it to trade.
-    </div>
-  </section>
-
-  <footer>
-    <div><a href="terms.html">Terms of Use</a>·<a href="disclaimer.html">Disclaimer</a>·<a href="privacy.html">Privacy</a></div>
-    <p>Research only. Not financial advice. Simulated results have known limitations and do not predict future results.<br>
-    Market data: Binance public market data. Not affiliated with, endorsed by or sponsored by Binance.<br>
-    Research data file generated <span id="gen">–</span>.</p>
-  </footer>
 </main>
+
+<footer class="foot"><div class="in">
+  <div>
+    <p><strong style="color:var(--ink-2)">iCryptoPulse Research Lab.</strong> Research only. Not financial advice. Simulated results have known limitations and do not predict future results.</p>
+    <p>Market data: Binance public market data. Not affiliated with, endorsed by or sponsored by Binance.</p>
+    <p id="gen-line">Research data file generated <span id="gen">–</span>.</p>
+  </div>
+  <div class="links"><a href="terms.html">Terms of Use</a><a href="disclaimer.html">Disclaimer</a><a href="privacy.html">Privacy</a></div>
+</div></footer>
 
 <noscript><p style="padding:16px">This research page needs JavaScript. Research only; not financial advice; not for trading.</p></noscript>
 
@@ -161,38 +273,47 @@ footer a { color: var(--ink2); margin: 0 6px; }
   var TERMS_VERSION = "2026-11-08";
   var KEY = "icp_terms_accepted";
   var PRICE_URL = "https://data-api.binance.vision/api/v3/ticker/price?symbols=";
-  var state = { data: null, live: {}, liveAt: null };
+  var TRADE_ROWS = 20;
+  var state = { data: null, live: {}, liveAt: null, showAll: false };
 
   function accepted() { try { return localStorage.getItem(KEY) === TERMS_VERSION; } catch (e) { return false; } }
   function remember() { try { localStorage.setItem(KEY, TERMS_VERSION); } catch (e) {} }
 
-  var gate = document.getElementById("gate"), agree = document.getElementById("agree"), enter = document.getElementById("enter");
+  var gate = el("gate"), agree = el("agree"), enter = el("enter");
   agree.addEventListener("change", function () { enter.disabled = !agree.checked; });
   enter.addEventListener("click", function () { if (agree.checked) { remember(); start(); } });
+  el("more").addEventListener("click", function () { state.showAll = !state.showAll; renderTrades(); });
   if (accepted()) start();
 
   function start() {
     gate.hidden = true;
-    document.getElementById("app").hidden = false;
+    el("app").hidden = false;
     load();
     setInterval(load, 10 * 60 * 1000);
     setInterval(prices, 15 * 1000);
+    setInterval(nextRun, 30 * 1000);
   }
 
-  function usd(x) { return x == null || isNaN(x) ? "–" : "US$" + x.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-  function num(x, d) { return x == null || isNaN(x) ? "–" : x.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); }
-  function pct(x) { return x == null || isNaN(x) ? "–" : (x >= 0 ? "+" : "") + (x * 100).toFixed(2) + "%"; }
-  function cls(node, x) { node.classList.remove("up", "down"); if (x > 0) node.classList.add("up"); else if (x < 0) node.classList.add("down"); }
-  function price(p) { return p >= 100 ? num(p, 2) : p >= 1 ? num(p, 4) : num(p, 6); }
   function el(id) { return document.getElementById(id); }
+  function bad(x) { return x == null || isNaN(x); }
+  function num(x, d) { return bad(x) ? "–" : x.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function usd(x) { return bad(x) ? "–" : (x < 0 ? "−US$" : "US$") + num(Math.abs(x), 2); }
+  function sgd(x) { return bad(x) ? "–" : "S$" + num(x, 2); }
+  function pct(x) { return bad(x) ? "–" : (x > 0 ? "+" : x < 0 ? "−" : "") + num(Math.abs(x * 100), 2) + "%"; }
+  function bps(x, d) { return bad(x) ? "–" : num(x, d == null ? 1 : d) + " bps"; }
+  function signed(x) { return bad(x) ? "–" : (x > 0 ? "+" : x < 0 ? "−" : "") + "US$" + num(Math.abs(x), 2); }
+  function cls(node, x) { node.classList.remove("up", "down"); if (x > 1e-9) node.classList.add("up"); else if (x < -1e-9) node.classList.add("down"); }
+  function price(p) { return p >= 100 ? num(p, 2) : p >= 1 ? num(p, 4) : num(p, 6); }
   function coin(s) { return s.replace(/USDT$/, ""); }
   function last(a) { return a[a.length - 1]; }
+  function fmtDate(iso) { var d = new Date(iso); return isNaN(d) ? "–" : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
+  function set(id, text) { el(id).textContent = text; }
 
   function load() {
     fetch("data/paper_status.json?t=" + Date.now(), { cache: "no-store" })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (d) { state.data = d; renderStatic(); prices(); })
-      .catch(function () { el("live-text").textContent = "Could not load the research data file."; el("live-dot").classList.add("stale"); });
+      .catch(function () { set("live-text", "Could not load the research data file."); el("live-dot").classList.add("stale"); });
   }
 
   function prices() {
@@ -201,7 +322,7 @@ footer a { color: var(--ink2); margin: 0 6px; }
     fetch(PRICE_URL + encodeURIComponent(syms), { cache: "no-store" })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (rows) { rows.forEach(function (x) { state.live[x.symbol] = parseFloat(x.price); }); state.liveAt = new Date(); renderLive(); })
-      .catch(function () { el("live-dot").classList.add("stale"); el("live-text").textContent = "Live prices unavailable; showing last daily marks."; renderLive(); });
+      .catch(function () { el("live-dot").classList.add("stale"); set("live-text", "Live prices unavailable; showing last daily marks."); renderLive(); });
   }
 
   function liveEquity() {
@@ -211,54 +332,106 @@ footer a { color: var(--ink2); margin: 0 6px; }
     return v;
   }
 
-  function cells(tr, values) { values.forEach(function (v) { var td = document.createElement("td"); td.textContent = v; tr.appendChild(td); }); return tr; }
+  function nextRun() {
+    var now = new Date(), n = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 5));
+    if (n <= now) n = new Date(n.getTime() + 864e5);
+    var m = Math.round((n - now) / 6e4);
+    set("f-next", "08:05 SGT · in " + (m >= 60 ? Math.floor(m / 60) + "h " : "") + (m % 60) + "m");
+  }
+
+  function cells(tr, values) {
+    values.forEach(function (v) { var td = document.createElement("td"); if (v instanceof Node) td.appendChild(v); else td.textContent = v; tr.appendChild(td); });
+    return tr;
+  }
+  function emptyRow(tb, n, text) { tb.innerHTML = ""; var tr = document.createElement("tr"), td = document.createElement("td");
+    td.colSpan = n; td.className = "empty"; td.textContent = text; tr.appendChild(td); tb.appendChild(tr); }
 
   function renderStatic() {
-    var d = state.data, e = last(d.equity);
-    el("gen").textContent = new Date(d.generated_utc).toLocaleString();
-    el("init").textContent = num(d.run.initial_usdt, 0);
-    el("rebal-text").textContent = e ? "Last daily rebalance: " + e.date + " (about 08:05 Singapore time)" : "No rebalance yet";
-    var c = d.costs;
-    el("t-cost").textContent = c.avg_total_bps == null ? "–" : num(c.avg_total_bps, 1) + " bps";
-    el("t-cost-s").textContent = c.fills ? c.fills + " fills · backtests assumed " + c.assumed_bps + " bps" : "no fills yet";
-    var m = d.maker_probes;
-    el("t-maker").textContent = m.fill_rate == null ? "pending" : Math.round(m.fill_rate * 100) + "%";
-    el("t-maker-s").textContent = m.settled ? m.settled + " of " + m.posted + " checked" : m.posted + " posted; checked at next rebalance";
-    el("research").textContent = "Context: " + d.research.trials + " strategy variants have been tested so far under pre-registered rules; " +
-      d.research.validated_strategies + " have passed. " + d.research.note;
-    var tb = el("trades").querySelector("tbody"); tb.innerHTML = "";
-    if (!d.trades.length) tb.innerHTML = '<tr><td colspan="8" class="empty">No simulated trades yet.</td></tr>';
-    d.trades.slice(0, 60).forEach(function (t) {
-      tb.appendChild(cells(document.createElement("tr"), [t.date, coin(t.symbol), t.side === "BUY" ? "Buy" : "Sell", num(t.notional, 2),
-        price(t.price), num(t.fee_bps, 1), num(t.slippage_bps, 2), num(t.fee_bps + t.slippage_bps, 1)]));
+    var d = state.data, e = last(d.equity), c = d.costs, m = d.maker_probes;
+    set("gen", new Date(d.generated_utc).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" }));
+    set("f-run", "Passive top-10 control");
+    set("f-start", fmtDate(d.run.started_utc));
+    set("f-status", d.run.status === "active" ? "Active" : d.run.status === "halted_limit" ? "Halted (loss limit)" : d.run.status);
+    nextRun();
+    var today = new Date().toISOString().slice(0, 10), age = e ? (Date.parse(today) - Date.parse(e.date)) / 864e5 : null;
+    set("rebal-text", e ? "Last daily rebalance " + fmtDate(e.date + "T00:00:00Z") + (age >= 2 ? " · daily run overdue" : "") : "No rebalance yet");
+    // costs
+    set("t-cost", bps(c.avg_total_bps));
+    set("t-cost-s", c.fills ? "assumed " + c.assumed_bps + " bps in backtests" : "no fills yet");
+    var big = el("c-big"); big.firstChild.nodeValue = bad(c.avg_total_bps) ? "–" : num(c.avg_total_bps, 1);
+    var max = Math.max(40, Math.ceil(Math.max(c.p90_total_bps || 0, c.avg_total_bps || 0, c.assumed_bps) / 10) * 10 + 10);
+    el("c-fill").style.width = Math.min(100, (c.avg_total_bps || 0) / max * 100) + "%";
+    el("c-ref").style.left = (c.assumed_bps / max * 100) + "%";
+    set("c-ref-l", "assumed " + c.assumed_bps + " bps"); set("c-max", max);
+    set("c-fee", bps(c.avg_fee_bps)); set("c-slip", bps(c.avg_slippage_bps, 2)); set("c-vw", bps(c.value_weighted_total_bps));
+    set("c-p90", bps(c.p90_total_bps)); set("c-n", c.fills + " · US$" + num(c.traded_usdt, 0));
+    // patient orders
+    var fr = m.fill_rate == null ? "Pending" : Math.round(m.fill_rate * 100) + "%";
+    set("t-maker", fr); set("p-big", fr);
+    set("t-maker-s", m.settled ? m.settled + " of " + m.posted + " checked" : m.posted + " posted · checked next run");
+    set("p-n", m.posted + " · " + m.settled); set("p-drift", bps(m.avg_drift_bps_unfilled));
+    // research
+    set("r-trials", d.research.trials); set("r-pass", d.research.validated_strategies); set("r-note", d.research.note);
+    set("fill-tag", c.fills + " fills" + (c.orders_skipped_min_size ? " · " + c.orders_skipped_min_size + " below min size" : ""));
+    renderTrades();
+  }
+
+  function renderTrades() {
+    var d = state.data, tb = el("trades").querySelector("tbody"), more = el("more");
+    if (!d.trades.length) { emptyRow(tb, 8, "No simulated fills yet."); more.hidden = true; return; }
+    tb.innerHTML = "";
+    var rows = state.showAll ? d.trades : d.trades.slice(0, TRADE_ROWS);
+    rows.forEach(function (t) {
+      var side = document.createElement("span"); side.className = "side"; side.textContent = t.side === "BUY" ? "Buy" : "Sell";
+      var tr = cells(document.createElement("tr"), [t.date, coin(t.symbol), side, num(t.notional, 2), price(t.price), num(t.fee_bps, 1), num(t.slippage_bps, 2), num(t.fee_bps + t.slippage_bps, 1)]);
+      tr.children[1].className = "sym";
+      tb.appendChild(tr);
     });
+    more.hidden = d.trades.length <= TRADE_ROWS;
+    more.textContent = state.showAll ? "Show fewer" : "Show all " + d.trades.length + " fills";
   }
 
   function renderLive() {
     var d = state.data; if (!d) return;
     var e = last(d.equity), eq = liveEquity();
-    if (state.liveAt) { el("live-dot").classList.remove("stale"); el("live-text").textContent = "Live prices · updated " + state.liveAt.toLocaleTimeString(); }
-    el("t-eq").textContent = usd(eq);
-    var dayR = e ? eq / e.equity - 1 : null, allR = eq / d.run.initial_usdt - 1;
-    el("t-day").textContent = pct(dayR); cls(el("t-day"), dayR);
-    el("t-day-s").textContent = e ? usd(eq - e.equity) : "";
-    el("t-all").textContent = pct(allR); cls(el("t-all"), allR);
-    el("t-all-s").textContent = "since " + (d.run.started_utc || "").slice(0, 10);
+    if (state.liveAt) { el("live-dot").classList.remove("stale"); set("live-text", "Live prices · updated " + state.liveAt.toLocaleTimeString("en-GB")); }
+    set("t-eq", usd(eq));
+    var allR = eq == null ? null : eq / d.run.initial_usdt - 1;
+    var s = el("t-eq-s"); s.textContent = eq == null ? "Simulated US$, not real money" : pct(allR) + " since start (" + signed(eq - d.run.initial_usdt) + ") · simulated";
+    cls(s, allR);
+    var dayR = e && eq != null ? eq / e.equity - 1 : null;
+    set("t-day", pct(dayR)); cls(el("t-day"), dayR);
+    set("t-day-s", e && eq != null ? signed(eq - e.equity) : "");
     var inv = 0; d.positions.forEach(function (p) { inv += p.qty * (state.live[p.symbol] || p.mark_price); });
-    el("t-gross").textContent = eq ? Math.round(inv / eq * 100) + "%" : "–";
-    var tb = el("pos").querySelector("tbody"); tb.innerHTML = "";
-    if (!d.positions.length) tb.innerHTML = '<tr><td colspan="7" class="empty">No simulated holdings.</td></tr>';
-    d.positions.forEach(function (p) {
-      var lp = state.live[p.symbol] || p.mark_price, ch = lp / p.mark_price - 1, val = p.qty * lp;
-      var tr = cells(document.createElement("tr"), [coin(p.symbol), num(p.qty, p.qty < 1 ? 6 : 2), price(p.mark_price), price(lp), pct(ch), num(val, 2), Math.round(val / eq * 100) + "%"]);
-      cls(tr.children[4], ch);
-      tb.appendChild(tr);
-    });
+    set("t-gross", eq ? Math.round(inv / eq * 100) + "%" : "–");
+    set("pos-tag", d.positions.length + " coins · US$" + num(inv, 0));
+    var tb = el("pos").querySelector("tbody");
+    if (!d.positions.length) emptyRow(tb, 7, "No simulated holdings.");
+    else {
+      tb.innerHTML = "";
+      d.positions.slice().sort(function (a, b) { return b.qty * (state.live[b.symbol] || b.mark_price) - a.qty * (state.live[a.symbol] || a.mark_price); })
+        .forEach(function (p) {
+          var lp = state.live[p.symbol] || p.mark_price, ch = lp / p.mark_price - 1, val = p.qty * lp, w = val / eq;
+          var wb = document.createElement("span"); wb.className = "wbar";
+          var t = document.createElement("span"); t.textContent = Math.round(w * 100) + "%";
+          var bar = document.createElement("i"), fill = document.createElement("b"); fill.style.width = Math.min(100, w / 0.25 * 100) + "%";
+          bar.appendChild(fill); wb.appendChild(bar); wb.appendChild(t);
+          var tr = cells(document.createElement("tr"), [coin(p.symbol), num(p.qty, p.qty < 1 ? 5 : p.qty < 100 ? 3 : 0), price(p.mark_price), price(lp), pct(ch), num(val, 2), wb]);
+          tr.children[0].className = "sym"; cls(tr.children[4], ch);
+          tb.appendChild(tr);
+        });
+    }
+    // loss limits (S$)
     var rate = e ? e.usdt_sgd : 1.3;
-    var dayLoss = e ? Math.max(0, (e.equity - eq) * rate) : 0;
+    var dayLoss = e && eq != null ? Math.max(0, (e.equity - eq) * rate) : 0;
     var monthDd = e ? Math.max(e.month_dd_sgd, dayLoss) : 0;
-    el("l-day").textContent = "S$" + num(dayLoss, 2); meter("m-day", dayLoss / 50);
-    el("l-month").textContent = "S$" + num(monthDd, 2); meter("m-month", monthDd / 200);
+    set("l-day", sgd(dayLoss) + " of S$" + d.limits.day_sgd); meter("m-day", dayLoss / d.limits.day_sgd);
+    set("l-month", sgd(monthDd) + " of S$" + d.limits.month_sgd); meter("m-month", monthDd / d.limits.month_sgd);
+    var breached = d.limits.breaches.length > 0 || dayLoss >= d.limits.day_sgd || monthDd >= d.limits.month_sgd;
+    var ok = el("l-ok"); ok.classList.toggle("bad", breached);
+    ok.innerHTML = breached
+      ? '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8 15 14H1L8 1.8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 6.5v3.2M8 11.8v.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Limit reached'
+      : '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m5 8.2 2 2 4-4.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Within limits';
     chart(eq);
   }
 
@@ -266,43 +439,61 @@ footer a { color: var(--ink2); margin: 0 6px; }
 
   function chart(liveEq) {
     var d = state.data, box = el("chart");
-    var pts = d.equity.map(function (e) { return { t: new Date(e.date + "T00:05:00Z"), v: e.equity, label: e.date + " daily mark" }; });
-    if (liveEq != null) pts.push({ t: state.liveAt || new Date(), v: liveEq, label: "Live now" });
+    var pts = d.equity.map(function (e) { return { t: new Date(e.date + "T00:05:00Z"), v: e.equity, label: fmtDate(e.date + "T00:00:00Z") + " · daily mark", live: false }; });
+    if (liveEq != null) pts.push({ t: state.liveAt || new Date(), v: liveEq, label: "Live now", live: true });
     if (pts.length < 2) { box.innerHTML = '<div class="empty">The chart fills in as daily records accumulate.</div>'; return; }
-    var W = box.clientWidth || 600, H = 240, L = 58, R = 14, T = 12, B = 28;
+    var W = Math.max(320, box.clientWidth || 600), H = 260, L = 64, R = 76, T = 14, B = 30;
     var t0 = pts[0].t.getTime(), t1 = last(pts).t.getTime(); if (t1 === t0) t1 = t0 + 1;
     var vs = pts.map(function (p) { return p.v; }).concat([d.run.initial_usdt]);
-    var lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs), pad = (hi - lo) * 0.15 || hi * 0.01; lo -= pad; hi += pad;
-    var span = hi - lo, dec = span < 4 ? 2 : span < 40 ? 1 : 0;
+    var lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs), pad = (hi - lo) * 0.12 || hi * 0.01; lo -= pad; hi += pad;
+    var raw = (hi - lo) / 4, mag = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / mag;
+    var step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * mag;
+    lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+    var ticks = []; for (var tv = lo; tv <= hi + step / 2; tv += step) ticks.push(tv);
+    var dec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9)) + (step / mag === 2.5 ? 1 : 0);
     function x(t) { return L + (t - t0) / (t1 - t0) * (W - L - R); }
     function y(v) { return T + (hi - v) / (hi - lo) * (H - T - B); }
     var cs = getComputedStyle(document.documentElement);
-    var line = cs.getPropertyValue("--accent"), grid = cs.getPropertyValue("--line"), ink2 = cs.getPropertyValue("--ink2"), surf = cs.getPropertyValue("--surface");
-    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Paper equity over time">';
-    for (var i = 0; i <= 4; i++) { var gv = lo + (hi - lo) * i / 4, gy = y(gv);
+    function v(n) { return cs.getPropertyValue(n).trim(); }
+    var line = v("--accent"), grid = v("--line"), muted = v("--muted"), ink2 = v("--ink-2"), surf = v("--surface");
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Paper equity over time, simulated US dollars">';
+    s += '<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + line + '" stop-opacity=".18"/><stop offset="1" stop-color="' + line + '" stop-opacity="0"/></linearGradient></defs>';
+    ticks.forEach(function (gv) { var gy = y(gv);
       s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + gy + '" y2="' + gy + '" stroke="' + grid + '" stroke-width="1"/>';
-      s += '<text x="' + (L - 8) + '" y="' + (gy + 4) + '" text-anchor="end" font-size="11" fill="' + ink2 + '">' + num(gv, dec) + '</text>'; }
+      s += '<text x="' + (L - 10) + '" y="' + (gy + 4) + '" text-anchor="end" font-size="11" fill="' + muted + '">' + num(gv, dec) + '</text>'; });
     var yi = y(d.run.initial_usdt);
-    s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yi + '" y2="' + yi + '" stroke="' + ink2 + '" stroke-dasharray="4 4" stroke-width="1"/>';
-    s += '<path d="' + pts.map(function (p, i) { return (i ? "L" : "M") + x(p.t.getTime()).toFixed(1) + " " + y(p.v).toFixed(1); }).join(" ") +
-         '" fill="none" stroke="' + line + '" stroke-width="2" stroke-linejoin="round"/>';
-    pts.forEach(function (p) { s += '<circle cx="' + x(p.t.getTime()) + '" cy="' + y(p.v) + '" r="4" fill="' + line + '" stroke="' + surf + '" stroke-width="2"/>'; });
-    s += '<text x="' + L + '" y="' + (H - 8) + '" font-size="11" fill="' + ink2 + '">' + pts[0].t.toISOString().slice(0, 10) + '</text>';
-    s += '<text x="' + (W - R) + '" y="' + (H - 8) + '" font-size="11" text-anchor="end" fill="' + ink2 + '">now</text>';
+    s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yi + '" y2="' + yi + '" stroke="' + muted + '" stroke-dasharray="4 4" stroke-width="1"/>';
+    s += '<text x="' + (W - R + 8) + '" y="' + (yi + 4) + '" font-size="11" fill="' + muted + '">Start</text>';
+    var path = pts.map(function (p, i) { return (i ? "L" : "M") + x(p.t.getTime()).toFixed(1) + " " + y(p.v).toFixed(1); }).join(" ");
+    s += '<path d="' + path + ' L' + x(t1).toFixed(1) + ' ' + (H - B) + ' L' + L + ' ' + (H - B) + ' Z" fill="url(#g)"/>';
+    s += '<path d="' + path + '" fill="none" stroke="' + line + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    pts.forEach(function (p) {
+      s += '<circle cx="' + x(p.t.getTime()) + '" cy="' + y(p.v) + '" r="4" fill="' + (p.live ? surf : line) + '" stroke="' + (p.live ? line : surf) + '" stroke-width="2"/>';
+    });
+    var lp = last(pts), ly = Math.min(H - B - 4, Math.max(T + 10, y(lp.v)));
+    if (Math.abs(ly - yi) < 14) ly += ly < yi ? -10 : 10;
+    s += '<text x="' + (W - R + 8) + '" y="' + (ly + 4) + '" font-size="12" font-weight="650" fill="' + ink2 + '">' + num(lp.v, 2) + '</text>';
+    s += '<text x="' + L + '" y="' + (H - 8) + '" font-size="11" fill="' + muted + '">' + fmtDate(pts[0].t.toISOString()) + '</text>';
+    s += '<text x="' + (W - R) + '" y="' + (H - 8) + '" font-size="11" text-anchor="end" fill="' + muted + '">Now</text>';
+    s += '<line id="xh" x1="0" x2="0" y1="' + T + '" y2="' + (H - B) + '" stroke="' + muted + '" stroke-width="1" visibility="hidden"/>';
     s += '<rect x="' + L + '" y="0" width="' + (W - L - R) + '" height="' + H + '" fill="transparent" id="hit"/></svg><div class="tip" id="tip" hidden></div>';
     box.innerHTML = s;
-    var tip = el("tip"), hit = el("hit");
+    var tip = el("tip"), hit = el("hit"), xh = el("xh");
     function show(ev) {
       var r = box.getBoundingClientRect(), cx = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
       var best = pts[0], bd = 1e9;
       pts.forEach(function (p) { var dd = Math.abs(x(p.t.getTime()) * r.width / W - cx); if (dd < bd) { bd = dd; best = p; } });
-      tip.hidden = false; tip.textContent = best.label + ": " + usd(best.v);
-      tip.style.left = (x(best.t.getTime()) * r.width / W) + "px"; tip.style.top = (y(best.v) * r.height / H) + "px";
+      var bx = x(best.t.getTime());
+      xh.setAttribute("x1", bx); xh.setAttribute("x2", bx); xh.setAttribute("visibility", "visible");
+      tip.hidden = false; tip.innerHTML = ""; var b = document.createElement("b"); b.textContent = usd(best.v);
+      tip.appendChild(b); tip.appendChild(document.createElement("br")); tip.appendChild(document.createTextNode(best.label));
+      var left = bx * r.width / W; tip.style.left = Math.min(r.width - 70, Math.max(70, left)) + "px"; tip.style.top = (y(best.v) * r.height / H) + "px";
     }
+    function hide() { tip.hidden = true; xh.setAttribute("visibility", "hidden"); }
     hit.addEventListener("mousemove", show); hit.addEventListener("touchstart", show, { passive: true });
-    hit.addEventListener("mouseleave", function () { tip.hidden = true; });
+    hit.addEventListener("mouseleave", hide); hit.addEventListener("touchend", function () { setTimeout(hide, 1500); });
   }
-  window.addEventListener("resize", function () { if (state.data) chart(liveEquity()); });
+  var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { if (state.data) chart(liveEquity()); }, 120); });
 })();
 </script>
 </body>
