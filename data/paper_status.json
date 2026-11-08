@@ -1,0 +1,243 @@
+{
+ "generated_utc": "2026-11-08T13:37:32+00:00",
+ "notice": "Research only. Simulated (paper) trades of a passive control basket, run to measure trading costs. Not a strategy, not a signal, not financial advice. Do not use for trading.",
+ "run": {
+  "run_id": "control-passive-top10",
+  "kind": "control",
+  "strategy": "PASSIVE",
+  "cell": "passive|top10",
+  "started_utc": "2026-11-08T13:37:20+00:00",
+  "initial_usdt": 1000.0,
+  "cost_model": "taker at live bid/ask + depth impact; account fee",
+  "status": "active",
+  "label": "Cost-measurement control: passive top-10 basket, volatility-sized"
+ },
+ "equity": [
+  {
+   "date": "2026-11-08",
+   "equity": 999.2458138862,
+   "cash": 270.53705198619997,
+   "gross": 0.7292587587292005,
+   "ret": -0.0007541861137999595,
+   "drawdown": -0.0007541861137999595,
+   "costs": 0.7287342138,
+   "day_pnl_sgd": -0.9804419479399485,
+   "month_dd_sgd": 0.9804419479399485,
+   "usdt_sgd": 1.3,
+   "breach": null
+  }
+ ],
+ "positions": [
+  {
+   "symbol": "BNBUSDT",
+   "qty": 0.176,
+   "mark_price": 699.055,
+   "value": 123.03367999999999
+  },
+  {
+   "symbol": "BTCUSDT",
+   "qty": 0.00158,
+   "mark_price": 75996.005,
+   "value": 120.07368790000001
+  },
+  {
+   "symbol": "ETHUSDT",
+   "qty": 0.0388,
+   "mark_price": 2241.005,
+   "value": 86.95099400000001
+  },
+  {
+   "symbol": "SOLUSDT",
+   "qty": 0.936,
+   "mark_price": 89.555,
+   "value": 83.82348000000002
+  },
+  {
+   "symbol": "DOGEUSDT",
+   "qty": 1008.0,
+   "mark_price": 0.07131499999999999,
+   "value": 71.88551999999999
+  },
+  {
+   "symbol": "XRPUSDT",
+   "qty": 59.2,
+   "mark_price": 1.1645500000000002,
+   "value": 68.94136000000002
+  },
+  {
+   "symbol": "SUIUSDT",
+   "qty": 62.400000000000006,
+   "mark_price": 0.85415,
+   "value": 53.29896
+  },
+  {
+   "symbol": "UNIUSDT",
+   "qty": 6.45,
+   "mark_price": 7.000500000000001,
+   "value": 45.153225000000006
+  },
+  {
+   "symbol": "NEARUSDT",
+   "qty": 10.4,
+   "mark_price": 3.7095000000000002,
+   "value": 38.5788
+  },
+  {
+   "symbol": "ZECUSDT",
+   "qty": 0.029,
+   "mark_price": 1274.795,
+   "value": 36.969055000000004
+  }
+ ],
+ "trades": [
+  {
+   "date": "2026-11-08",
+   "ts": "2026-11-08T13:37:32+00:00",
+   "symbol": "BNBUSDT",
+   "side": "BUY",
+   "qty": 0.176,
+   "price": 699.06,
+   "notional": 123.03455999999998,
+   "fee_bps": 10.0,
+   "slippage_bps": 0.07152513035448503,
+   "liquidity": "taker"
+  },
+  {
+   "date": "2026-11-08",
+   "ts": "2026-11-08T13:37:32+00:00",
+   "symbol": "BTCUSDT",
+   "side": "BUY",
+   "qty": 0.00158,
+   "price": 75996.01,
+   "notional": 120.0736958,
+   "fee_bps": 10.0,
+   "slippage_bps": 0.0006579293201142215,
+   "liquidity": "taker"
+  },
+  {
+   "date": "2026-11-08",
+   "ts": "2026-11-08T13:37:32+00:00",
+   "symbol": "DOGEUSDT",
+   "side": "BUY",
+   "qty": 1008.0,
+   "price": 0.07132,
+   "notional": 71.89056,
+   "fee_bps": 10.0,
+   "slippage_bps": 0.7011147724889576,
+   "liquidity": "taker"
+  },
+  {
+   "date": "2026-11-08",
+   "ts": "2026-11-08T13:37:32+00:00",
+   "symbol": "ETHUSDT",
+   "side": "BUY",
+   "qty": 0.0388,
+   "price": 2241.01,
+   "notional": 86.95118800000002,
+   "fee_bps": 10.0,
+   "slippage_bps": 0.022311418315037846,
+   "liquidity": "taker"
+  },
+  {
+   "date": "2026-11-08",
+   "ts": "2026-11-08T13:37:32+00:00",
+   "symbol": "NEARUSDT",
+   "side": "BUY",
+   "qty": 10.4,
+   "price": 3.71,
+   "notional": 38.584,
+   "fee_bps": 10.0,
+   "slippage_bps": 1.3478905512864885,
+   "liquidity": "taker"
+  },
+  {
+   "date": "2026-11-08",
+   "ts": "2026-11-08T13:37:32+00:00",
+   "symbol": "SOLUSDT",
+   "side": "BUY",
+   "qty": 0.936,
+   "price": 89.56,
+   "notional": 83.82816000000001,
+   "fee_bps": 10.0,
+   "slippage_bps": 0.5583161185858357,
+   "liquidity": "taker"
+  },
+  {
+   "date": "2026-11-08",
+   "ts": "2026-11-08T13:37:32+00:00",
+   "symbol": "SUIUSDT",
+   "side": "BUY",
+   "qty": 62.400000000000006,
+   "price": 0.8542,
+   "notional": 53.302080000000004,
+   "fee_bps": 10.0,
+   "slippage_bps": 0.5853772756540947,
+   "liquidity": "taker"
+  },
+  {
+   "date": "2026-11-08",
+   "ts": "2026-11-08T13:37:32+00:00",
+   "symbol": "UNIUSDT",
+   "side": "BUY",
+   "qty": 6.45,
+   "price": 7.001,
+   "notional": 45.15645000000001,
+   "fee_bps": 10.0,
+   "slippage_bps": 0.7142346975212097,
+   "liquidity": "taker"
+  },
+  {
+   "date": "2026-11-08",
+   "ts": "2026-11-08T13:37:32+00:00",
+   "symbol": "XRPUSDT",
+   "side": "BUY",
+   "qty": 59.2,
+   "price": 1.1646,
+   "notional": 68.94432,
+   "fee_bps": 10.0,
+   "slippage_bps": 0.42935039285460874,
+   "liquidity": "taker"
+  },
+  {
+   "date": "2026-11-08",
+   "ts": "2026-11-08T13:37:32+00:00",
+   "symbol": "ZECUSDT",
+   "side": "BUY",
+   "qty": 0.029,
+   "price": 1274.8,
+   "notional": 36.9692,
+   "fee_bps": 10.0,
+   "slippage_bps": 0.039221992554738336,
+   "liquidity": "taker"
+  }
+ ],
+ "costs": {
+  "fills": 10,
+  "orders_skipped_min_size": 0,
+  "assumed_bps": 30.0,
+  "avg_fee_bps": 10.0,
+  "avg_slippage_bps": 0.44700002789355703,
+  "avg_total_bps": 10.447000027893559,
+  "value_weighted_total_bps": 10.34928733188644,
+  "p90_total_bps": 10.777600282897737,
+  "traded_usdt": 728.7342138000001
+ },
+ "maker_probes": {
+  "posted": 10,
+  "settled": 0,
+  "fill_rate": null,
+  "avg_drift_bps_unfilled": null,
+  "note": "H-007: would a patient (maker) order at the touch have filled within 4 hours?"
+ },
+ "limits": {
+  "day_sgd": 50,
+  "month_sgd": 200,
+  "breaches": []
+ },
+ "research": {
+  "trials": 200,
+  "validated_strategies": 0,
+  "note": "No strategy has passed validation; this run holds a passive basket only."
+ },
+ "db_mb": 0.119
+}
