@@ -591,7 +591,7 @@
    ]
   }
  ],
- "generated_utc": "2026-11-14T00:05:19+00:00",
+ "generated_utc": "2026-11-14T04:05:05+00:00",
  "notice": "Research only. Simulated (paper) trades of a passive control basket, run to measure trading costs. Not a strategy, not a signal, not financial advice. Do not use for trading.",
  "run": {
   "run_id": "control-passive-top10",
@@ -905,7 +905,7 @@
   "breaches": []
  },
  "research": {
-  "trials": 554,
+  "trials": 558,
   "validated_strategies": 0,
   "note": "No strategy has passed validation; this run holds a passive basket only."
  },
