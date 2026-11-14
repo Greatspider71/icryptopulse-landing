@@ -105,6 +105,47 @@ td.sym { font-weight: 650; }
 .mini .s { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mini svg { display: block; width: 100%; height: 74px; margin-top: 4px; overflow: visible; }
 .mini .tip { transform: translate(-50%, calc(-100% - 8px)); z-index: 5; }
+/* forward test */
+.fw .steps { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0; margin: 14px 0 6px; counter-reset: st; }
+.fw .steps li { position: relative; padding: 10px 10px 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 12.5px; color: var(--muted); background: var(--surface-2); }
+.fw .steps li b { display: block; font-size: 13px; color: var(--ink-2); font-weight: 650; }
+.fw .steps li.done { border-color: color-mix(in srgb, var(--good) 45%, var(--line)); background: color-mix(in srgb, var(--good) 8%, var(--surface)); }
+.fw .steps li.done b::before { content: "\2713  "; color: var(--good); }
+.fw .steps li.now { border-color: var(--accent); background: var(--accent-soft); color: var(--ink-2); }
+.fw .steps li.now b { color: var(--accent); }
+@media (max-width: 720px) { .fw .steps { grid-template-columns: repeat(2, 1fr); } }
+.fw .prog { margin: 14px 0 4px; }
+.fw .bar { height: 10px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; }
+.fw .bar i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 6px; transition: width .6s ease; }
+.fw .lab { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.fw .fk { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 14px 0 6px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.fw .fk > div { padding: 12px 14px; border-left: 1px solid var(--line); min-width: 0; }
+.fw .fk > div:first-child { border-left: 0; }
+.fw .fk .k { font-size: 12px; color: var(--muted); font-weight: 550; }
+.fw .fk .v { font-size: 20px; font-weight: 680; margin-top: 3px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fw .fk .s { font-size: 11.5px; color: var(--muted); }
+@media (max-width: 720px) { .fw .fk { grid-template-columns: repeat(2, 1fr); } .fw .fk > div:nth-child(3) { border-left: 0; } .fw .fk > div:nth-child(n+3) { border-top: 1px solid var(--line); } }
+.fw .charts { display: grid; grid-template-columns: 3fr 2fr; gap: 14px; margin-top: 12px; }
+@media (max-width: 860px) { .fw .charts { grid-template-columns: 1fr; } }
+.fw .cbox { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 6px; min-width: 0; }
+.fw .cbox h3 { margin: 0 0 2px; font-size: 13px; font-weight: 650; }
+.fw .cbox .legend { display: flex; gap: 14px; font-size: 11.5px; color: var(--muted); margin-bottom: 2px; }
+.fw .cbox .legend i { display: inline-block; width: 14px; height: 0; border-top: 2.5px solid var(--accent); vertical-align: middle; margin-right: 5px; }
+.fw .cbox .legend i.h { border-top: 2.5px dashed var(--muted); }
+.fw svg.c { display: block; width: 100%; height: 190px; overflow: visible; }
+.fw svg.c .ln { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.fw svg.c .ln.h { stroke: var(--muted); stroke-dasharray: 5 4; stroke-width: 2; }
+.fw svg.c .gr { stroke: var(--line); stroke-width: 1; }
+.fw svg.c .z { stroke: var(--line-strong); stroke-width: 1.2; }
+.fw svg.c text { fill: var(--muted); font-size: 10.5px; font-family: var(--font); }
+.fw svg.c .pos { fill: color-mix(in srgb, var(--good) 70%, transparent); } .fw svg.c .neg { fill: color-mix(in srgb, var(--bad) 70%, transparent); }
+.fw .empty { display: grid; place-items: center; height: 190px; text-align: center; color: var(--muted); font-size: 13px; padding: 0 16px; }
+.fw .funnel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 16px; }
+@media (max-width: 720px) { .fw .funnel { grid-template-columns: repeat(2, 1fr); } }
+.fw .funnel > div { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--surface-2); }
+.fw .funnel .n { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.fw .funnel .t { font-size: 12px; color: var(--muted); }
+.fw .funnel > .f { border-color: var(--accent); background: var(--accent-soft); }
 /* terms gate */
 .gate { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: flex; align-items: center; justify-content: center;
   padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px)); overflow-y: auto; }
@@ -143,7 +184,7 @@ td.sym { font-weight: 650; }
 
 <header class="topbar"><div class="in">
   <a class="brand" href="./"><span class="mark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 9h3l2-5 3 9 2-6 1.2 2H15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>iCryptoPulse <small>Research Lab</small></a>
-  <nav class="nav"><a href="#dashboard">Dashboard</a><a href="terms.html">Terms</a></nav>
+  <nav class="nav"><a href="#forward">Forward test</a><a href="#dashboard">Cost monitor</a><a href="terms.html">Terms</a></nav>
 </div></header>
 <div class="notice" role="note"><div class="in"><strong>Research only.</strong><span>Simulated trades · Not financial advice · Not for trading</span><a href="terms.html">Terms of Use</a></div></div>
 
@@ -159,6 +200,36 @@ td.sym { font-weight: 650; }
       <div><dt>Status</dt><dd id="f-status">–</dd></div>
       <div><dt>Next scheduled rebalance</dt><dd id="f-next">–</dd></div>
     </dl>
+  </section>
+
+  <section class="card fw" id="forward" aria-label="Forward test progress">
+    <div class="card-h"><h2>Forward test · BTC/ETH monthly 70/30</h2><span class="tag" id="fw-tag">Loading…</span></div>
+    <p class="small" id="fw-rule">&nbsp;</p>
+    <ol class="steps" id="fw-steps">
+      <li id="st-1"><b>Tested on history</b>Passed the 2019&ndash;2023 test (42 of 42 start dates)</li>
+      <li id="st-2"><b>Rule frozen</b>Rules and pass mark locked in a tamper-evident log before the first day</li>
+      <li id="st-3"><b>Forward paper run</b>Simulated daily buys on live exchange prices</li>
+      <li id="st-4"><b>Evaluation</b>One judgement after 12 months; nothing is adjusted along the way</li>
+    </ol>
+    <div class="prog"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="fw-pb"><i id="fw-bar"></i></div>
+      <div class="lab"><span id="fw-day">–</span><span id="fw-dates">–</span></div></div>
+    <div class="fk">
+      <div><div class="k">Rule: return on money put in</div><div class="v" id="fw-r">–</div><div class="s">monthly reset to 70/30</div></div>
+      <div><div class="k">Buy and hold: same money</div><div class="v" id="fw-h">–</div><div class="s">same buys, never rebalanced</div></div>
+      <div><div class="k">Difference</div><div class="v" id="fw-d">–</div><div class="s" id="fw-d-s">percentage points</div></div>
+      <div><div class="k">Daily cycles</div><div class="v" id="fw-c">–</div><div class="s" id="fw-c-s">needs at least 95% of days</div></div>
+    </div>
+    <div class="charts">
+      <div class="cbox"><h3>Return on money put in</h3>
+        <div class="legend"><span><i></i>Monthly reset</span><span><i class="h"></i>Buy and hold</span></div>
+        <div id="fw-ch1"></div></div>
+      <div class="cbox"><h3>Reset minus buy and hold (points)</h3>
+        <div class="legend"><span>Above zero: the rule is ahead</span></div>
+        <div id="fw-ch2"></div></div>
+    </div>
+    <p class="small" id="fw-note" style="margin-top:10px">&nbsp;</p>
+    <div class="funnel" id="fw-funnel" aria-label="Research pipeline"></div>
+    <p class="small" style="margin-top:8px">Early numbers move a lot and mean little: the rule's tested edge is small, so a few months can point either way. Only the 12-month evaluation counts.</p>
   </section>
 
   <div class="statusline">
@@ -572,6 +643,80 @@ td.sym { font-weight: 650; }
     hit.addEventListener("mouseleave", hide); hit.addEventListener("touchend", function () { setTimeout(hide, 1500); });
   }
   var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { if (state.data) { chart(liveEquity()); holdChart(); } }, 120); });
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  function $(id) { return document.getElementById(id); }
+  function num(x, d) { return (x == null || isNaN(x)) ? "–" : x.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function pc(x, d) { return (x == null || isNaN(x)) ? "–" : (x > 0 ? "+" : x < 0 ? "−" : "") + num(Math.abs(x * 100), d == null ? 2 : d) + "%"; }
+  function pp(x) { return (x == null || isNaN(x)) ? "–" : (x > 0 ? "+" : x < 0 ? "−" : "") + num(Math.abs(x), 2) + " pt"; }
+  function fmtDate(s) { if (!s) return "–"; var d = new Date(s + "T00:00:00Z"); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }); }
+  function set(id, t) { var e = $(id); if (e) e.textContent = t; }
+  function cls(e, x) { e.classList.remove("up", "down"); if (x > 1e-9) e.classList.add("up"); else if (x < -1e-9) e.classList.add("down"); }
+
+  function lineChart(host, dates, series, opts) {
+    var W = 560, H = 190, L = 44, R = 10, T = 8, B = 22;
+    var all = [].concat.apply([], series.map(function (s) { return s.v; }));
+    var lo = Math.min.apply(null, all.concat([0])), hi = Math.max.apply(null, all.concat([0]));
+    if (hi - lo < 1e-6) { hi += .01; lo -= .01; }
+    var pad = (hi - lo) * .12; lo -= pad; hi += pad;
+    var n = dates.length, x = function (i) { return L + (n < 2 ? 0 : i * (W - L - R) / (n - 1)); }, y = function (v) { return T + (hi - v) * (H - T - B) / (hi - lo); };
+    var s = '<svg class="c" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + opts.label + '">';
+    for (var k = 0; k <= 3; k++) { var v = lo + (hi - lo) * k / 3; s += '<line class="gr" x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v) + '" y2="' + y(v) + '"/><text x="' + (L - 6) + '" y="' + (y(v) + 3.5) + '" text-anchor="end">' + opts.fmt(v) + '</text>'; }
+    s += '<line class="z" x1="' + L + '" x2="' + (W - R) + '" y1="' + y(0) + '" y2="' + y(0) + '"/>';
+    if (opts.bars) {
+      var bw = Math.max(1.5, Math.min(14, (W - L - R) / Math.max(n, 1) * .7));
+      series[0].v.forEach(function (v, i) { var y0 = y(0), y1 = y(v); s += '<rect class="' + (v >= 0 ? "pos" : "neg") + '" x="' + (x(i) - bw / 2) + '" y="' + Math.min(y0, y1) + '" width="' + bw + '" height="' + Math.max(1, Math.abs(y1 - y0)) + '"/>'; });
+    } else {
+      series.forEach(function (sr) { s += '<polyline class="ln ' + sr.c + '" points="' + sr.v.map(function (v, i) { return x(i).toFixed(1) + "," + y(v).toFixed(1); }).join(" ") + '"/>'; });
+    }
+    s += '<text x="' + L + '" y="' + (H - 5) + '">' + fmtDate(dates[0]) + '</text><text x="' + (W - R) + '" y="' + (H - 5) + '" text-anchor="end">' + fmtDate(dates[n - 1]) + '</text></svg>';
+    host.innerHTML = s;
+  }
+
+  function empty(host, msg) { host.innerHTML = '<div class="empty">' + msg + '</div>'; }
+
+  function render(d) {
+    var f = d.forward || {}, p = d.pipeline || {};
+    var st = f.status || "not_registered";
+    var steps = { 1: "done", 2: st === "not_registered" ? "todo" : "done", 3: st === "running" ? "now" : (st === "evaluation_due" ? "done" : "todo"), 4: st === "evaluation_due" ? "now" : "todo" };
+    if (st === "registered_waiting" || st === "waiting_first_cycle") steps[3] = "now";
+    if (st === "not_registered") steps[2] = "now";
+    [1, 2, 3, 4].forEach(function (i) { $("st-" + i).className = steps[i]; });
+    set("fw-rule", f.rule || "");
+    var tag = { not_registered: "Not started · waiting to be frozen", registered_waiting: "Starts " + fmtDate(f.start_date), waiting_first_cycle: "First daily cycle pending",
+                running: "Day " + f.day + " of " + f.horizon_days, evaluation_due: "Evaluation due" }[st] || "–";
+    set("fw-tag", tag);
+    var prog = Math.round((f.progress || 0) * 100);
+    $("fw-bar").style.width = prog + "%";
+    $("fw-pb").setAttribute("aria-valuenow", String(prog));
+    set("fw-day", f.day ? "Day " + f.day + " of " + f.horizon_days + " · " + prog + "% of the test period" : "Day 0 of " + (f.horizon_days || 365));
+    set("fw-dates", f.start_date ? "Start " + fmtDate(f.start_date) + " · evaluation " + fmtDate(f.evaluation_date) : "Dates are set when the test is frozen");
+    set("fw-r", pc(f.reset_now)); set("fw-h", pc(f.held_now));
+    set("fw-d", pp(f.difference_now_pp)); cls($("fw-d"), f.difference_now_pp || 0);
+    set("fw-c", f.cycles_done == null ? "–" : f.cycles_done + " done · " + (f.cycles_missed || 0) + " missed");
+    if (f.dates && f.dates.length >= 2) {
+      lineChart($("fw-ch1"), f.dates, [{ v: f.held_return.map(function (v) { return v * 100; }), c: "h" }, { v: f.reset_return.map(function (v) { return v * 100; }), c: "" }],
+                { fmt: function (v) { return num(v, 1) + "%"; }, label: "Return on money put in: monthly reset against buy and hold" });
+      lineChart($("fw-ch2"), f.dates, [{ v: f.difference_pp }], { bars: true, fmt: function (v) { return num(v, 2); }, label: "Difference in percentage points, reset minus buy and hold" });
+    } else {
+      var m = st === "not_registered" ? "Waiting to start. The charts fill in from the second daily cycle." : "Charts appear after the second daily cycle.";
+      empty($("fw-ch1"), m); empty($("fw-ch2"), m);
+    }
+    var note = st === "running" ? "Simulated fills use the live order book plus a " + num((f.fee_bps || 20) / 100, 2) + "% fee. " + (f.slippage_bps_median_btc != null ? "Median price impact so far: BTC " + num(f.slippage_bps_median_btc, 2) + " bps, ETH " + num(f.slippage_bps_median_eth, 2) + " bps. " : "") + "Next monthly reset " + fmtDate(f.next_reset) + "."
+              : st === "not_registered" ? "Nothing runs until the test is registered and frozen. After that it runs by itself every day and this page updates." : "";
+    set("fw-note", note);
+    $("fw-funnel").innerHTML = [["" + (p.hypotheses || 0), "ideas tested on history", ""], ["" + (p.rejected || 0), "rejected: no reliable edge", ""],
+      ["" + (p.passed_discovery || 0), "passed the history test", ""], [(st === "running" || st === "evaluation_due") ? "Running" : "Next", "forward test on live prices", "f"]]
+      .map(function (a) { return '<div class="' + a[2] + '"><div class="n">' + a[0] + '</div><div class="t">' + a[1] + '</div></div>'; }).join("");
+  }
+
+  fetch("data/forward_status.json?t=" + Math.floor(Date.now() / 600000), { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(function () { set("fw-tag", "Status unavailable"); set("fw-note", "The forward-test status file could not be loaded."); });
 })();
 </script>
 </body>
