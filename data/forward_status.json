@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-17T00:05:19+00:00",
+ "generated_utc": "2026-11-18T00:05:18+00:00",
  "notice": "Research only. A simulated (paper) test of a fixed rule on live exchange prices. No orders are placed and no money is involved. Not a strategy recommendation, not financial advice. Do not use for trading.",
  "pipeline": {
   "hypotheses": 29,
@@ -21,34 +21,38 @@
   "dates": [
    "2026-11-15",
    "2026-11-16",
-   "2026-11-17"
+   "2026-11-17",
+   "2026-11-18"
   ],
   "reset_return": [
    -0.002009,
    0.010729,
-   -0.000473
+   -0.000473,
+   0.001042
   ],
   "held_return": [
    -0.002009,
    0.010729,
-   -0.000473
+   -0.000473,
+   0.001042
   ],
   "difference_pp": [
    0.0,
    0.0,
+   0.0,
    0.0
   ],
-  "day": 3,
-  "progress": 0.00821917808219178,
-  "cycles_done": 3,
+  "day": 4,
+  "progress": 0.010958904109589041,
+  "cycles_done": 4,
   "cycles_missed": 0,
   "coverage": 1.0,
-  "reset_now": -0.000473,
-  "held_now": -0.000473,
+  "reset_now": 0.001042,
+  "held_now": 0.001042,
   "difference_now_pp": 0.0,
   "fee_bps_of_volume": 19.96007984031891,
   "slippage_bps_median_btc": 0.008,
-  "slippage_bps_median_eth": 0.327,
+  "slippage_bps_median_eth": 0.218,
   "resets_done": 0,
   "next_reset": "2026-12-01",
   "status": "running",
